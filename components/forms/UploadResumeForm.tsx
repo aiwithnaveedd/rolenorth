@@ -11,26 +11,26 @@ export function UploadResumeForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    setMessage('');
+const handleSubmit = async (formData: FormData) => {
+  setIsLoading(true);
+  setMessage("");
 
-    try {
-      const result = await uploadResume(formData);
-      
-      if (result.success) {
-        setMessage('Analysis completed successfully!');
-        // TODO: Redirect to report page
-        window.location.href = `/reports/${result.reportId}`;
-      } else {
-        setMessage(result.error || 'Something went wrong');
-      }
-    } catch (error) {
-      setMessage('Failed to process resume');
-    } finally {
-      setIsLoading(false);
+  try {
+    const result = await uploadResume(formData);
+
+    if (result.success && result.reportId) {
+      setMessage("Analysis completed successfully! Redirecting...");
+      // Redirect to report
+      window.location.href = `/reports/${result.reportId}`;
+    } else {
+      setMessage(result.error || "Something went wrong");
     }
-  };
+  } catch (error: any) {
+    setMessage(error.message || "Failed to process resume");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <form action={handleSubmit} className="max-w-2xl space-y-6">

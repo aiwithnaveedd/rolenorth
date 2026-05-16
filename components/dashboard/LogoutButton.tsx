@@ -1,12 +1,21 @@
+"use client";
+
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+
 export function LogoutButton() {
-    return (
-        <form action="/api/auth/logout" method="post">
-            <button
-                type="submit"
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-            >
-                Logout
-            </button>
-        </form>
-    );
-}   
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/login";
+  };
+
+  return (
+    <Button variant="outline" onClick={handleLogout} className="gap-2">
+      <LogOut size={18} />
+      Logout
+    </Button>
+  );
+}
