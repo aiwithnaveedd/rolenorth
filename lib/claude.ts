@@ -1,64 +1,64 @@
-// lib/claude.ts - TEMPORARY MOCK (for testing)
-import { analysisPrompt } from "./prompts";
+// // lib/claude.ts - TEMPORARY MOCK (for testing)
+// import { analysisPrompt } from "./prompts";
 
-export async function analyzeWithClaude(
-  resumeText: string,
-  metadata: {
-    currentLocation: string;
-    targetLocation?: string;
-  },
-) {
-  console.log("🔄 Using MOCK Claude Analysis...");
+// export async function analyzeWithClaude(
+//   resumeText: string,
+//   metadata: {
+//     currentLocation: string;
+//     targetLocation?: string;
+//   },
+// ) {
+//   console.log("🔄 Using MOCK Claude Analysis...");
 
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+//   // Simulate API delay
+//   await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  const mockAnalysis = `
-# Professional Summary
-You are a talented professional with strong technical foundations. Your background shows good potential in the current market.
+//   const mockAnalysis = `
+// # Professional Summary
+// You are a talented professional with strong technical foundations. Your background shows good potential in the current market.
 
-# Current Market Position
-**Overall Score: 78/100**
+// # Current Market Position
+// **Overall Score: 78/100**
 
-**Strengths:**
-- Solid technical skills
-- Clear career progression
-- Good education background
+// **Strengths:**
+// - Solid technical skills
+// - Clear career progression
+// - Good education background
 
-**Areas for Improvement:**
-- Missing some in-demand modern skills
-- Limited quantifiable achievements
+// **Areas for Improvement:**
+// - Missing some in-demand modern skills
+// - Limited quantifiable achievements
 
-# Key Technical Skills
-**Strong:** ${resumeText.includes("JavaScript") || resumeText.includes("React") ? "JavaScript, React" : "Core Programming"}
-**Moderate:** Backend Development, Databases
-**Missing:** Cloud (AWS/Azure), AI/ML, DevOps
+// # Key Technical Skills
+// **Strong:** ${resumeText.includes("JavaScript") || resumeText.includes("React") ? "JavaScript, React" : "Core Programming"}
+// **Moderate:** Backend Development, Databases
+// **Missing:** Cloud (AWS/Azure), AI/ML, DevOps
 
-# Automation & Skill Decay Risk
-- **High Risk:** Traditional manual processes
-- **Medium Risk:** Basic web development
-- **Low Risk:** Strategic thinking & leadership
+// # Automation & Skill Decay Risk
+// - **High Risk:** Traditional manual processes
+// - **Medium Risk:** Basic web development
+// - **Low Risk:** Strategic thinking & leadership
 
-# Career Pivot Opportunities
-1. **Full Stack Developer** → High demand, good salary growth
-2. **Product Manager (Technical)** → Leverage domain knowledge
-3. **AI Implementation Specialist** → Emerging high-growth area
+// # Career Pivot Opportunities
+// 1. **Full Stack Developer** → High demand, good salary growth
+// 2. **Product Manager (Technical)** → Leverage domain knowledge
+// 3. **AI Implementation Specialist** → Emerging high-growth area
 
-# ATS Score
-**82/100**  
-Quick tips: Add more keywords, quantify achievements.
+// # ATS Score
+// **82/100**
+// Quick tips: Add more keywords, quantify achievements.
 
-# Action Plan (Next 30/60/90 Days)
-**30 Days:** Update resume with metrics, learn one new skill  
-**60 Days:** Build 1-2 strong portfolio projects  
-**90 Days:** Start applying aggressively + networking
-`;
+// # Action Plan (Next 30/60/90 Days)
+// **30 Days:** Update resume with metrics, learn one new skill
+// **60 Days:** Build 1-2 strong portfolio projects
+// **90 Days:** Start applying aggressively + networking
+// `;
 
-  return {
-    analysis: mockAnalysis,
-    ats_score: 82,
-  };
-}
+//   return {
+//     analysis: mockAnalysis,
+//     ats_score: 82,
+//   };
+// }
 
 // // lib/claude.ts
 // import Anthropic from "@anthropic-ai/sdk";

@@ -1,12 +1,14 @@
 import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 export default async function ReportPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params; // ← This is the fix
+  const { id } = await params;
 
   const supabase = await createClientServer();
   const {
@@ -25,26 +27,12 @@ export default async function ReportPage({
   if (!report) notFound();
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Career Analysis Report</h1>
-        <a
-          href={`/reports/${id}`}
-          className="text-sm text-blue-600 hover:underline"
-        >
-          ← Back to Reports
-        </a>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-sm border">
-        <div className="flex justify-between mb-8">
-          <div>
-            <p className="text-sm text-zinc-500">ATS Score</p>
-            <p className="text-6xl font-bold text-green-600">
-              {report.ats_score}/100
-            </p>
-          </div>
-          <p className="text-sm text-zinc-500">
+        <div>
+          <h1 className="text-4xl font-bold">Career Analysis Report</h1>
+          <p className="text-zinc-500 mt-1">
+            Generated on{" "}
             {new Date(report.created_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
@@ -53,17 +41,31 @@ export default async function ReportPage({
           </p>
         </div>
 
-        <div className="prose dark:prose-invert max-w-none text-lg leading-relaxed">
-          {typeof report.analysis === "string" ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: report.analysis.replace(/\n/g, "<br><br>"),
-              }}
-            />
-          ) : (
-            <pre>{JSON.stringify(report.analysis, null, 2)}</pre>
-          )}
+        <Button className="gap-2">
+          <Download size={18} />
+          Download PDF
+        </Button>
+      </div>
+
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-lg p-10 leading-relaxed">
+        <div className="flex justify-between items-start mb-10 border-b pb-8">
+          <div>
+            <p className="text-sm uppercase tracking-widest text-zinc-500">
+              ATS SCORE
+            </p>
+            <p className="text-7xl font-bold text-emerald-600 mt-2">
+              {report.ats_score}
+              <span className="text-3xl text-emerald-600/70">/100</span>
+            </p>
+          </div>
         </div>
+
+        <div
+          className="prose dark:prose-invert max-w-none text-[17px] leading-relaxed"
+          dangerouslySetInnerHTML={{
+            __html: report.analysis.replace(/\n/g, "<br><br>"),
+          }}
+        />
       </div>
     </div>
   );
