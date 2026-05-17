@@ -2,7 +2,7 @@ import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-
+import { DownloadPDFButton } from "@/components/reports/ReportPDF";
 export default async function ReportPage({
   params,
 }: {
@@ -41,10 +41,7 @@ export default async function ReportPage({
           </p>
         </div>
 
-        <Button className="gap-2">
-          <Download size={18} />
-          Download PDF
-        </Button>
+        <DownloadPDFButton report={report} />
       </div>
 
       <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-lg p-10 leading-relaxed">
