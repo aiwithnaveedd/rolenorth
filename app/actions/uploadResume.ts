@@ -2,9 +2,12 @@
 
 import { createClientServer } from "@/lib/supabase/server";
 import { parseFile } from "@/lib/parser";
-import { analyzeWithClaude } from "@/lib/claude";
+
+// import { analyzeWithClaude } from "@/lib/claude";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
+
+import { analyzeWithAI } from '@/lib/gemini';
 
 export async function uploadResume(formData: FormData) {
   const supabase = await createClientServer();
@@ -37,8 +40,8 @@ export async function uploadResume(formData: FormData) {
       throw new Error("Could not extract sufficient text from your resume");
     }
 
-    // 2. Analyze with Claude
-    const analysisResult = await analyzeWithClaude(resumeText, {
+    // 2. Analyze with AI
+    const analysisResult = await analyzeWithAI(resumeText, {
       currentLocation,
       targetLocation,
     });
