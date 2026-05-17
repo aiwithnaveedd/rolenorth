@@ -1,42 +1,148 @@
-'use client';
+"use client";
 
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+
+import { Button } from "@/components/ui/button";
+
+import { Download, Loader2, FileDown, Sparkles } from "lucide-react";
 
 const PDFDownloadLink = dynamic(
-  () => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink),
-  { ssr: false }
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false },
 );
 
 const styles = StyleSheet.create({
-  page: { 
-    padding: 40, 
-    fontSize: 11, 
-    lineHeight: 1.5,
-    fontFamily: 'Helvetica'
+  page: {
+    paddingTop: 45,
+    paddingBottom: 45,
+    paddingHorizontal: 38,
+    fontSize: 11,
+    lineHeight: 1.8,
+    fontFamily: "Helvetica",
+    backgroundColor: "#f8fafc",
+    color: "#111827",
   },
-  title: { 
-    fontSize: 22, 
-    marginBottom: 15, 
-    textAlign: 'center', 
-    fontWeight: 'bold' 
+
+  header: {
+    marginBottom: 30,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
   },
-  scoreContainer: { 
-    marginBottom: 25, 
-    textAlign: 'center' 
+
+  brand: {
+    fontSize: 12,
+    color: "#6366f1",
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+    marginBottom: 8,
+    fontWeight: "bold",
   },
-  score: { 
-    fontSize: 42, 
-    color: '#10b981', 
-    fontWeight: 'bold' 
+
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#111827",
   },
-  subtitle: { 
-    fontSize: 16, 
-    marginTop: 20, 
-    marginBottom: 10, 
-    fontWeight: 'bold' 
+
+  description: {
+    fontSize: 11,
+    color: "#6b7280",
+    lineHeight: 1.6,
+  },
+
+  scoreCard: {
+    backgroundColor: "#111827",
+    borderRadius: 16,
+    paddingVertical: 28,
+    paddingHorizontal: 24,
+    marginBottom: 30,
+    textAlign: "center",
+  },
+
+  scoreLabel: {
+    fontSize: 11,
+    color: "#9ca3af",
+    marginBottom: 10,
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+  },
+
+  score: {
+    fontSize: 54,
+    color: "#10b981",
+    fontWeight: "bold",
+  },
+
+  scoreText: {
+    marginTop: 10,
+    color: "#d1d5db",
+    fontSize: 11,
+  },
+
+  infoGrid: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 28,
+  },
+
+  infoCard: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderRadius: 14,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+
+  infoTitle: {
+    fontSize: 13,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#111827",
+  },
+
+  infoText: {
+    fontSize: 10,
+    color: "#6b7280",
+    lineHeight: 1.7,
+  },
+
+  section: {
+    marginTop: 10,
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    marginBottom: 14,
+    fontWeight: "bold",
+    color: "#111827",
+  },
+
+  analysisContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 22,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+
+  analysisText: {
+    fontSize: 11,
+    color: "#374151",
+    lineHeight: 1.9,
+  },
+
+  footer: {
+    marginTop: 35,
+    paddingTop: 18,
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    textAlign: "center",
+    fontSize: 10,
+    color: "#9ca3af",
   },
 });
 
@@ -48,19 +154,68 @@ function ReportDocument({ report }: ReportPDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>RoleNorth - Career Analysis Report</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.brand}>RoleNorth AI</Text>
 
-        <View style={styles.scoreContainer}>
-          <Text style={styles.score}>{report.ats_score} / 100</Text>
-          <Text>ATS Score</Text>
+          <Text style={styles.title}>Career Analysis Report</Text>
+
+          <Text style={styles.description}>
+            AI-powered resume intelligence report with ATS evaluation, career
+            growth insights, and future-proof recommendations.
+          </Text>
         </View>
 
-        <Text style={{ textAlign: 'center', marginBottom: 20, color: '#666' }}>
-          Generated on {new Date(report.created_at).toLocaleDateString()}
-        </Text>
+        {/* ATS Score */}
+        <View style={styles.scoreCard}>
+          <Text style={styles.scoreLabel}>ATS Compatibility Score</Text>
 
-        <Text style={styles.subtitle}>Full Analysis</Text>
-        <Text>{report.analysis}</Text>
+          <Text style={styles.score}>{report.ats_score}/100</Text>
+
+          <Text style={styles.scoreText}>
+            Generated on{" "}
+            {new Date(report.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
+        </View>
+
+        {/* Insight Cards */}
+        <View style={styles.infoGrid}>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Resume Intelligence</Text>
+
+            <Text style={styles.infoText}>
+              Deep AI evaluation of resume structure, keyword optimization,
+              readability, and ATS compatibility.
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Career Insights</Text>
+
+            <Text style={styles.infoText}>
+              Personalized analysis covering strengths, weaknesses, automation
+              exposure, and growth opportunities.
+            </Text>
+          </View>
+        </View>
+
+        {/* Full Analysis */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Full Career Analysis</Text>
+
+          <View style={styles.analysisContainer}>
+            <Text style={styles.analysisText}>{report.analysis}</Text>
+          </View>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text>Generated by RoleNorth • AI Career Intelligence Platform</Text>
+        </View>
       </Page>
     </Document>
   );
@@ -68,14 +223,31 @@ function ReportDocument({ report }: ReportPDFProps) {
 
 export function DownloadPDFButton({ report }: { report: any }) {
   return (
-    <PDFDownloadLink 
-      document={<ReportDocument report={report} />} 
-      fileName={`rolenorth-report-${new Date().toISOString().slice(0,10)}.pdf`}
+    <PDFDownloadLink
+      document={<ReportDocument report={report} />}
+      fileName={`rolenorth-report-${
+        new Date().toISOString().split("T")[0]
+      }.pdf`}
     >
       {({ loading }: { loading: boolean }) => (
-        <Button disabled={loading} className="gap-2">
-          <Download size={18} />
-          {loading ? 'Generating PDF...' : 'Download PDF'}
+        <Button
+          disabled={loading}
+          className="group h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Generating PDF...
+            </>
+          ) : (
+            <>
+              <div className="mr-2 rounded-full bg-white/20 p-1">
+                <FileDown className="h-4 w-4" />
+              </div>
+              Download PDF
+              <Sparkles className="ml-2 h-4 w-4 opacity-80" />
+            </>
+          )}
         </Button>
       )}
     </PDFDownloadLink>

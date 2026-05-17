@@ -1,26 +1,45 @@
-/**
- * RoleNorth - Advanced Career Analysis Prompt
- */
-
 export function analysisPrompt(text: string) {
   return `
-You are an expert career strategist and AI Resume Analyst for **RoleNorth**.
+You are a senior career analyst AI.
 
-Analyze the following resume and provide a comprehensive, honest, and actionable career report.
+Return ONLY valid JSON (no markdown, no extra text).
 
-**Return the response in clean Markdown format with these exact sections:**
+Structure:
 
-1. **Professional Summary** (2-3 sentences)
-2. **Current Market Position** (Strengths + Overall Score out of 100)
-3. **Key Technical Skills** (categorized: Strong, Moderate, Missing)
-4. **Automation & Skill Decay Risk** (High/Medium/Low for each major area + explanation)
-5. **Career Pivot Opportunities** (Top 3 realistic pivot paths with reasons)
-6. **ATS Score** (out of 100) + Quick ATS Improvement Tips
-7. **Action Plan** (Next 30/60/90 days - very specific and prioritized)
+{
+  "summary": "",
+  "market_position": {
+    "score": 0,
+    "strengths": [],
+    "weaknesses": []
+  },
+  "skills": {
+    "strong": [],
+    "moderate": [],
+    "missing": []
+  },
+  "risk_analysis": {
+    "automation_risk": "Low | Medium | High",
+    "details": ""
+  },
+  "career_pivots": [
+    {
+      "role": "",
+      "reason": ""
+    }
+  ],
+  "ats": {
+    "score": 0,
+    "tips": []
+  },
+  "action_plan": {
+    "30_days": [],
+    "60_days": [],
+    "90_days": []
+  }
+}
 
-Be honest, constructive, and data-driven. Highlight both strengths and critical gaps.
-
-**Resume Content:**
+Resume:
 ${text}
 `;
 }
