@@ -13,9 +13,8 @@ export default function UploadPage() {
     setStage("parsing");
   };
 
-  // const handleAnalysisComplete = () => {
-  //   setIsAnalyzing(false);
-  // };
+  // We no longer need to hide it manually because we redirect
+  // const handleAnalysisComplete = () => setIsAnalyzing(false);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
@@ -41,10 +40,7 @@ export default function UploadPage() {
               </p>
             </div>
 
-            <UploadResumeForm
-              onAnalysisStart={handleAnalysisStart}
-              // onAnalysisComplete={handleAnalysisComplete}
-            />
+            <UploadResumeForm onAnalysisStart={handleAnalysisStart} />
           </>
         )}
 

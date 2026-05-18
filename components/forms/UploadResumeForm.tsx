@@ -23,10 +23,12 @@ export function UploadResumeForm({ onAnalysisStart }: UploadResumeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     onAnalysisStart?.(); // ← This triggers the full loading screen
     setIsLoading(true);
     setMessage("");
+    const formData = new FormData(e.currentTarget);
 
     try {
       const result = await uploadResume(formData);
@@ -70,7 +72,7 @@ export function UploadResumeForm({ onAnalysisStart }: UploadResumeFormProps) {
         </div>
 
         {/* Form */}
-        <form action={handleSubmit} className="space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-7">
           {/* Resume Upload */}
           <div className="space-y-3">
             <Label
