@@ -1,11 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-
 import { Button } from "@/components/ui/button";
-
-import { Download, Loader2, FileDown, Sparkles } from "lucide-react";
+import { Download } from "lucide-react";
+import dynamic from "next/dynamic";
 
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -14,135 +12,44 @@ const PDFDownloadLink = dynamic(
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 45,
-    paddingBottom: 45,
-    paddingHorizontal: 38,
-    fontSize: 11,
-    lineHeight: 1.8,
+    padding: 45,
+    fontSize: 11.5,
+    lineHeight: 1.7,
     fontFamily: "Helvetica",
-    backgroundColor: "#f8fafc",
-    color: "#111827",
   },
-
   header: {
-    marginBottom: 30,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-  },
-
-  brand: {
-    fontSize: 12,
-    color: "#6366f1",
-    textTransform: "uppercase",
-    letterSpacing: 1.5,
-    marginBottom: 8,
-    fontWeight: "bold",
-  },
-
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#111827",
-  },
-
-  description: {
-    fontSize: 11,
-    color: "#6b7280",
-    lineHeight: 1.6,
-  },
-
-  scoreCard: {
-    backgroundColor: "#111827",
-    borderRadius: 16,
-    paddingVertical: 28,
-    paddingHorizontal: 24,
-    marginBottom: 30,
+    fontSize: 24,
+    marginBottom: 25,
     textAlign: "center",
+    fontWeight: "bold",
   },
-
+  score: {
+    fontSize: 42,
+    color: "#10b981",
+    textAlign: "center",
+    marginBottom: 6,
+  },
   scoreLabel: {
     fontSize: 11,
-    color: "#9ca3af",
-    marginBottom: 10,
-    textTransform: "uppercase",
-    letterSpacing: 1.5,
-  },
-
-  score: {
-    fontSize: 54,
-    color: "#10b981",
-    fontWeight: "bold",
-  },
-
-  scoreText: {
-    marginTop: 10,
-    color: "#d1d5db",
-    fontSize: 11,
-  },
-
-  infoGrid: {
-    flexDirection: "row",
-    gap: 16,
-    marginBottom: 28,
-  },
-
-  infoCard: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    borderRadius: 14,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-
-  infoTitle: {
-    fontSize: 13,
-    fontWeight: "bold",
-    marginBottom: 8,
-    color: "#111827",
-  },
-
-  infoText: {
-    fontSize: 10,
-    color: "#6b7280",
-    lineHeight: 1.7,
-  },
-
-  section: {
-    marginTop: 10,
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    marginBottom: 14,
-    fontWeight: "bold",
-    color: "#111827",
-  },
-
-  analysisContainer: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 22,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-
-  analysisText: {
-    fontSize: 11,
-    color: "#374151",
-    lineHeight: 1.9,
-  },
-
-  footer: {
-    marginTop: 35,
-    paddingTop: 18,
-    borderTopWidth: 1,
-    borderTopColor: "#e5e7eb",
     textAlign: "center",
-    fontSize: 10,
-    color: "#9ca3af",
+    color: "#555",
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 15,
+    marginTop: 22,
+    marginBottom: 10,
+    fontWeight: "bold",
+    color: "#1f2937",
+  },
+  bullet: {
+    marginLeft: 12,
+    marginBottom: 7,
+  },
+  subText: {
+    marginLeft: 12,
+    marginBottom: 10,
+    color: "#444",
   },
 });
 
@@ -151,71 +58,119 @@ interface ReportPDFProps {
 }
 
 function ReportDocument({ report }: ReportPDFProps) {
+  const data =
+    typeof report.analysis === "string"
+      ? JSON.parse(report.analysis)
+      : report.analysis;
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.brand}>RoleNorth AI</Text>
-
-          <Text style={styles.title}>Career Analysis Report</Text>
-
-          <Text style={styles.description}>
-            AI-powered resume intelligence report with ATS evaluation, career
-            growth insights, and future-proof recommendations.
-          </Text>
-        </View>
+        <Text style={styles.header}>RoleNorth - Career Analysis Report</Text>
 
         {/* ATS Score */}
-        <View style={styles.scoreCard}>
-          <Text style={styles.scoreLabel}>ATS Compatibility Score</Text>
+        <Text style={styles.score}>
+          {data.ats?.score || report.ats_score} / 100
+        </Text>
+        <Text style={styles.scoreLabel}>
+          ATS Score • Generated on{" "}
+          {new Date(report.created_at).toLocaleDateString()}
+        </Text>
 
-          <Text style={styles.score}>{report.ats_score}/100</Text>
+        {/* Summary */}
+        <Text style={styles.sectionTitle}>Professional Summary</Text>
+        <Text style={{ marginBottom: 20 }}>{data.summary}</Text>
 
-          <Text style={styles.scoreText}>
-            Generated on{" "}
-            {new Date(report.created_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+        {/* Market Position */}
+        <Text style={styles.sectionTitle}>Market Position</Text>
+        <Text>Overall Score: {data.market_position?.score}/100</Text>
+
+        <Text style={{ marginTop: 12, fontWeight: "bold" }}>Strengths</Text>
+        {data.market_position?.strengths?.map((item: string, i: number) => (
+          <Text key={i} style={styles.bullet}>
+            • {item}
           </Text>
-        </View>
+        ))}
 
-        {/* Insight Cards */}
-        <View style={styles.infoGrid}>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>Resume Intelligence</Text>
+        <Text style={{ marginTop: 12, fontWeight: "bold" }}>Weaknesses</Text>
+        {data.market_position?.weaknesses?.map((item: string, i: number) => (
+          <Text key={i} style={styles.bullet}>
+            • {item}
+          </Text>
+        ))}
 
-            <Text style={styles.infoText}>
-              Deep AI evaluation of resume structure, keyword optimization,
-              readability, and ATS compatibility.
+        {/* Skills */}
+        <Text style={styles.sectionTitle}>Skills Analysis</Text>
+        <Text>
+          <Text style={{ fontWeight: "bold" }}>Strong:</Text>{" "}
+          {data.skills?.strong?.join(", ") || "None"}
+        </Text>
+        <Text>
+          <Text style={{ fontWeight: "bold" }}>Moderate:</Text>{" "}
+          {data.skills?.moderate?.join(", ") || "None"}
+        </Text>
+        <Text>
+          <Text style={{ fontWeight: "bold" }}>Missing:</Text>{" "}
+          {data.skills?.missing?.join(", ") || "None"}
+        </Text>
+
+        {/* Risk */}
+        <Text style={styles.sectionTitle}>Automation & Skill Decay Risk</Text>
+        <Text style={{ fontWeight: "bold" }}>
+          Risk Level: {data.risk_analysis?.automation_risk}
+        </Text>
+        <Text style={{ marginTop: 6 }}>{data.risk_analysis?.details}</Text>
+
+        {/* Career Pivots */}
+        <Text style={styles.sectionTitle}>Career Pivot Opportunities</Text>
+        {data.career_pivots?.map((pivot: any, i: number) => (
+          <View key={i} style={{ marginBottom: 14 }}>
+            <Text style={{ fontWeight: "bold" }}>• {pivot.role}</Text>
+            <Text style={styles.subText}>{pivot.reason}</Text>
+          </View>
+        ))}
+
+        {/* Action Plan */}
+        <Text style={styles.sectionTitle}>Action Plan</Text>
+
+        {data.action_plan?.["30_days"] && (
+          <View style={{ marginBottom: 18 }}>
+            <Text style={{ fontWeight: "bold", marginBottom: 8 }}>
+              Next 30 Days
             </Text>
+            {data.action_plan["30_days"].map((item: string, i: number) => (
+              <Text key={i} style={styles.bullet}>
+                • {item}
+              </Text>
+            ))}
           </View>
+        )}
 
-          <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>Career Insights</Text>
-
-            <Text style={styles.infoText}>
-              Personalized analysis covering strengths, weaknesses, automation
-              exposure, and growth opportunities.
+        {data.action_plan?.["60_days"] && (
+          <View style={{ marginBottom: 18 }}>
+            <Text style={{ fontWeight: "bold", marginBottom: 8 }}>
+              Next 60 Days
             </Text>
+            {data.action_plan["60_days"].map((item: string, i: number) => (
+              <Text key={i} style={styles.bullet}>
+                • {item}
+              </Text>
+            ))}
           </View>
-        </View>
+        )}
 
-        {/* Full Analysis */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Full Career Analysis</Text>
-
-          <View style={styles.analysisContainer}>
-            <Text style={styles.analysisText}>{report.analysis}</Text>
+        {data.action_plan?.["90_days"] && (
+          <View>
+            <Text style={{ fontWeight: "bold", marginBottom: 8 }}>
+              Next 90 Days
+            </Text>
+            {data.action_plan["90_days"].map((item: string, i: number) => (
+              <Text key={i} style={styles.bullet}>
+                • {item}
+              </Text>
+            ))}
           </View>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>Generated by RoleNorth • AI Career Intelligence Platform</Text>
-        </View>
+        )}
       </Page>
     </Document>
   );
@@ -225,29 +180,12 @@ export function DownloadPDFButton({ report }: { report: any }) {
   return (
     <PDFDownloadLink
       document={<ReportDocument report={report} />}
-      fileName={`rolenorth-report-${
-        new Date().toISOString().split("T")[0]
-      }.pdf`}
+      fileName={`rolenorth-career-report-${new Date().toISOString().slice(0, 10)}.pdf`}
     >
       {({ loading }: { loading: boolean }) => (
-        <Button
-          disabled={loading}
-          className="group h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Generating PDF...
-            </>
-          ) : (
-            <>
-              <div className="mr-2 rounded-full bg-white/20 p-1">
-                <FileDown className="h-4 w-4" />
-              </div>
-              Download PDF
-              <Sparkles className="ml-2 h-4 w-4 opacity-80" />
-            </>
-          )}
+        <Button disabled={loading} className="gap-2">
+          <Download size={18} />
+          {loading ? "Generating PDF..." : "Download PDF Report"}
         </Button>
       )}
     </PDFDownloadLink>
