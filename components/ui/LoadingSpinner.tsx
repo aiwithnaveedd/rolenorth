@@ -1,38 +1,50 @@
-// components/ui/LoadingSpinner.tsx
-import React from 'react';
+import { Loader2, Sparkles, Brain } from "lucide-react";
 
 interface LoadingSpinnerProps {
-  message?: string;
-  subMessage?: string;
-  progress?: number; // 0-100 for progress bar
+  stage: "parsing" | "analyzing";
 }
 
-export default function LoadingSpinner({ 
-  message = "Analyzing your resume...", 
-  subMessage = "This usually takes 15-30 seconds",
-  progress 
-}: LoadingSpinnerProps) {
+export default function LoadingSpinner({ stage }: LoadingSpinnerProps) {
+  const messages = {
+    parsing: {
+      title: "Processing Resume",
+      subtitle: "Extracting text and structure...",
+      icon: Loader2,
+    },
+    analyzing: {
+      title: "AI Career Analysis",
+      subtitle:
+        "Evaluating skills • Automation risk • Career pivots • Action plan",
+      icon: Brain,
+    },
+  };
+
+  const current = messages[stage];
+
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="relative mb-8">
-        {/* Outer glow ring */}
-        <div className="w-20 h-20 border-4 border-zinc-200 dark:border-zinc-800 rounded-full animate-pulse" />
-        
-        {/* Spinning circle */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 border-4 border-transparent border-t-violet-600 border-r-violet-600 rounded-full animate-spin" />
+    <div className="flex flex-col items-center justify-center text-center">
+      <div className="relative mb-10">
+        <div className="w-24 h-24 rounded-full border-4 border-zinc-200 dark:border-zinc-800" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <current.icon className="w-12 h-12 text-violet-600 animate-spin" />
+        </div>
+        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 via-purple-500 to-violet-500 rounded-full opacity-20 blur-xl animate-pulse" />
       </div>
 
-      <h3 className="text-xl font-semibold mb-2">{message}</h3>
-      <p className="text-zinc-500 dark:text-zinc-400 max-w-xs">{subMessage}</p>
+      <h3 className="text-2xl font-semibold text-zinc-900 dark:text-white mb-3">
+        {current.title}
+      </h3>
+      <p className="text-zinc-600 dark:text-zinc-400 max-w-sm">
+        {current.subtitle}
+      </p>
 
-      {progress !== undefined && (
-        <div className="w-64 mt-8 bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-          <div 
-            className="h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-300 rounded-full"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      )}
+      <div className="mt-10 w-72 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+        <div className="h-full w-3/4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-[loading_2.5s_ease-in-out_infinite]" />
+      </div>
+
+      <p className="mt-4 text-xs text-zinc-500">
+        This usually takes 15–35 seconds
+      </p>
     </div>
   );
 }

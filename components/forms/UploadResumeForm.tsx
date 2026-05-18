@@ -14,11 +14,18 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-export function UploadResumeForm() {
+
+// At the top of UploadResumeForm component
+interface UploadResumeFormProps {
+  onAnalysisStart?: () => void;
+  onAnalysisComplete?: () => void;
+}
+export function UploadResumeForm({ onAnalysisStart, onAnalysisComplete }: UploadResumeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (formData: FormData) => {
+    onAnalysisStart?.();
     setIsLoading(true);
     setMessage('');
 
@@ -35,6 +42,7 @@ export function UploadResumeForm() {
       setMessage(error.message || 'Failed to process resume');
     } finally {
       setIsLoading(false);
+      onAnalysisComplete?.();
     }
   };
 
