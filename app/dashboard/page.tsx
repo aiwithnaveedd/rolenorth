@@ -1,19 +1,17 @@
-import { createClientServer } from "@/lib/supabase/server";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Upload, FileText, TrendingUp } from "lucide-react";
+import { createClientServer } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Upload, FileText, TrendingUp } from 'lucide-react';
 
 export default async function DashboardPage() {
   const supabase = await createClientServer();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  
+  const { data: { user } } = await supabase.auth.getUser();
   const { data: reports } = await supabase
-    .from("reports")
-    .select("*")
-    .eq("user_id", user?.id)
-    .order("created_at", { ascending: false })
+    .from('reports')
+    .select('*')
+    .eq('user_id', user?.id)
+    .order('created_at', { ascending: false })
     .limit(5);
 
   const latestReport = reports && reports.length > 0 ? reports[0] : null;
@@ -22,8 +20,7 @@ export default async function DashboardPage() {
     <div className="max-w-6xl mx-auto">
       <div className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight">
-          Welcome back,{" "}
-          {user?.user_metadata?.full_name?.split(" ")[0] || "there"}!
+          Welcome back, {user?.user_metadata?.full_name?.split(" ")[0] || 'there'}!
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400 mt-2 text-lg">
           Here's your career intelligence overview
@@ -47,7 +44,7 @@ export default async function DashboardPage() {
             <div>
               <p className="text-sm text-zinc-500">Latest ATS Score</p>
               <p className="text-4xl font-bold mt-2 text-emerald-600">
-                {latestReport?.ats_score || "—"}
+                {latestReport?.ats_score || '—'}
               </p>
             </div>
             <TrendingUp className="w-10 h-10 text-emerald-500" />
@@ -68,10 +65,7 @@ export default async function DashboardPage() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold">Recent Reports</h2>
-          <Link
-            href="/reports"
-            className="text-sm text-blue-600 hover:underline"
-          >
+          <Link href="/reports" className="text-sm text-blue-600 hover:underline">
             View All Reports →
           </Link>
         </div>
@@ -79,8 +73,8 @@ export default async function DashboardPage() {
         {reports && reports.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reports.map((report: any) => (
-              <Link
-                key={report.id}
+              <Link 
+                key={report.id} 
                 href={`/reports/${report.id}`}
                 className="block bg-white dark:bg-zinc-900 rounded-3xl p-6 hover:shadow-xl transition-all border hover:border-black"
               >
@@ -88,10 +82,10 @@ export default async function DashboardPage() {
                   <div>
                     <p className="font-semibold text-lg">Resume Analysis</p>
                     <p className="text-sm text-zinc-500 mt-1">
-                      {new Date(report.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
+                      {new Date(report.created_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
                       })}
                     </p>
                   </div>
@@ -108,9 +102,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-12 text-center">
             <p className="text-xl text-zinc-500">No reports yet</p>
-            <p className="text-zinc-400 mt-2">
-              Upload your first resume to get started
-            </p>
+            <p className="text-zinc-400 mt-2">Upload your first resume to get started</p>
             <Link href="/upload">
               <Button className="mt-6">Upload Resume Now</Button>
             </Link>
