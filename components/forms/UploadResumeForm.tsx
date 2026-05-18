@@ -21,31 +21,33 @@ interface UploadResumeFormProps {
   onAnalysisComplete?: () => void;
 }
 export function UploadResumeForm({ onAnalysisStart, onAnalysisComplete }: UploadResumeFormProps) {
+
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (formData: FormData) => {
-    onAnalysisStart?.();
+    onAnalysisStart?.(); // ← This triggers the full loading screen
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
       const result = await uploadResume(formData);
 
       if (result.success && result.reportId) {
-        setMessage('Analysis completed successfully! Redirecting...');
+        setMessage("Analysis completed successfully! Redirecting...");
+        onAnalysisComplete?.(); // Optional cleanup
         window.location.href = `/reports/${result.reportId}`;
       } else {
-        setMessage(result.error || 'Something went wrong');
+        setMessage(result.error || "Something went wrong");
+        onAnalysisComplete?.();
       }
     } catch (error: any) {
-      setMessage(error.message || 'Failed to process resume');
+      setMessage(error.message || "Failed to process resume");
+      onAnalysisComplete?.();
     } finally {
       setIsLoading(false);
-      onAnalysisComplete?.();
     }
   };
-
   return (
     <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-2xl">
       {/* Glow Effects */}

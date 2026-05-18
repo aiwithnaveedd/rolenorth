@@ -2,21 +2,18 @@
 
 import { useState } from "react";
 import { UploadResumeForm } from "@/components/forms/UploadResumeForm";
-import LoadingSpinner from "@/components/ui/LoadingSpinner"; // We'll create this
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function UploadPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [currentStage, setCurrentStage] = useState<"parsing" | "analyzing">(
-    "parsing",
-  );
+  const [stage, setStage] = useState<"parsing" | "analyzing">("parsing");
 
   const handleAnalysisStart = () => {
     setIsAnalyzing(true);
-    setCurrentStage("parsing");
+    setStage("parsing");
   };
 
   const handleAnalysisComplete = () => {
-    // Redirect happens in the form action, but we can clean up here if needed
     setIsAnalyzing(false);
   };
 
@@ -51,11 +48,11 @@ export default function UploadPage() {
           </>
         )}
 
-        {/* ====================== LOADING STATE ====================== */}
+        {/* ====================== FULL SCREEN LOADING ====================== */}
         {isAnalyzing && (
           <div className="w-full max-w-2xl">
             <div className="rounded-3xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
-              <LoadingSpinner stage={currentStage} />
+              <LoadingSpinner stage={stage} />
             </div>
           </div>
         )}
