@@ -18,12 +18,10 @@ import {
 // At the top of UploadResumeForm component
 interface UploadResumeFormProps {
   onAnalysisStart?: () => void;
-  onAnalysisComplete?: () => void;
 }
-export function UploadResumeForm({ onAnalysisStart, onAnalysisComplete }: UploadResumeFormProps) {
-
+export function UploadResumeForm({ onAnalysisStart }: UploadResumeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
     onAnalysisStart?.(); // ← This triggers the full loading screen
@@ -35,15 +33,15 @@ export function UploadResumeForm({ onAnalysisStart, onAnalysisComplete }: Upload
 
       if (result.success && result.reportId) {
         setMessage("Analysis completed successfully! Redirecting...");
-        onAnalysisComplete?.(); // Optional cleanup
-        window.location.href = `/reports/${result.reportId}`;
+        // Small delay so user sees the loading screen longer
+        setTimeout(() => {
+          window.location.href = `/reports/${result.reportId}`;
+        }, 800);
       } else {
         setMessage(result.error || "Something went wrong");
-        onAnalysisComplete?.();
       }
     } catch (error: any) {
       setMessage(error.message || "Failed to process resume");
-      onAnalysisComplete?.();
     } finally {
       setIsLoading(false);
     }
@@ -66,8 +64,8 @@ export function UploadResumeForm({ onAnalysisStart, onAnalysisComplete }: Upload
           </h2>
 
           <p className="mt-3 text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-            Get AI-powered career insights, automation risk analysis, skill
-            gap detection, and personalized career roadmap recommendations.
+            Get AI-powered career insights, automation risk analysis, skill gap
+            detection, and personalized career roadmap recommendations.
           </p>
         </div>
 

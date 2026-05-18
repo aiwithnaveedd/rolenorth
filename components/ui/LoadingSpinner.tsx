@@ -1,4 +1,4 @@
-import { Loader2, Sparkles, Brain } from "lucide-react";
+import { Loader2, Brain } from "lucide-react";
 
 interface LoadingSpinnerProps {
   stage: "parsing" | "analyzing";
