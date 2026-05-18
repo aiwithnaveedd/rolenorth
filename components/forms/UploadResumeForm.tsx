@@ -14,30 +14,40 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-export function UploadResumeForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
 
-  const handleSubmit = async (formData: FormData) => {
+// At the top of UploadResumeForm component
+interface UploadResumeFormProps {
+  onAnalysisStart?: () => void;
+}
+export function UploadResumeForm({ onAnalysisStart }: UploadResumeFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onAnalysisStart?.(); // ← This triggers the full loading screen
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
+    const formData = new FormData(e.currentTarget);
 
     try {
       const result = await uploadResume(formData);
 
       if (result.success && result.reportId) {
-        setMessage('Analysis completed successfully! Redirecting...');
-        window.location.href = `/reports/${result.reportId}`;
+        setMessage("Analysis completed successfully! Redirecting...");
+        // Small delay so user sees the loading screen longer
+        setTimeout(() => {
+          window.location.href = `/reports/${result.reportId}`;
+        }, 800);
       } else {
-        setMessage(result.error || 'Something went wrong');
+        setMessage(result.error || "Something went wrong");
       }
     } catch (error: any) {
-      setMessage(error.message || 'Failed to process resume');
+      setMessage(error.message || "Failed to process resume");
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-2xl">
       {/* Glow Effects */}
@@ -56,13 +66,13 @@ export function UploadResumeForm() {
           </h2>
 
           <p className="mt-3 text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-            Get AI-powered career insights, automation risk analysis, skill
-            gap detection, and personalized career roadmap recommendations.
+            Get AI-powered career insights, automation risk analysis, skill gap
+            detection, and personalized career roadmap recommendations.
           </p>
         </div>
 
         {/* Form */}
-        <form action={handleSubmit} className="space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-7">
           {/* Resume Upload */}
           <div className="space-y-3">
             <Label

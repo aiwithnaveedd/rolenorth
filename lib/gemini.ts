@@ -9,30 +9,30 @@ export async function analyzeWithAI(resumeText: string, metadata: {
   targetLocation?: string;
 }) {
   try {
-    console.log("🤖 Calling Gemini 2.5 Flash...");
+    console.log("🤖 Calling Gemini with Structured JSON...");
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",     // ← Changed to Flash (much better free tier)
+      model: "gemini-2.5-flash",
     });
 
-    const prompt = analysisPrompt(resumeText) + 
-      `\n\nCurrent Location: ${metadata.currentLocation}\nTarget Location: ${metadata.targetLocation || 'Not specified'}`;
+    const fullPrompt =
+      analysisPrompt(resumeText) +
+      `\n\nCurrent Location: ${metadata.currentLocation}\nTarget Location: ${metadata.targetLocation || "Not specified"}`;
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const result = await model.generateContent(fullPrompt);
+    let responseText = result.response.text();
 
-    // Extract ATS Score
-    const atsMatch = responseText.match(/ATS Score[:\s]*(\d+)/i) || 
-                     responseText.match(/(\d+)\s*\/\s*100/i);
-    const atsScore = atsMatch ? parseInt(atsMatch[1]) : 78;
+    // Clean JSON if Gemini adds extra text
+    responseText = responseText.replace(/```json\n?|\n?```/g, "").trim();
+
+    const parsed = JSON.parse(responseText);
 
     return {
-      analysis: responseText,
-      ats_score: Math.min(100, Math.max(60, atsScore)),
+      analysis: parsed, // Now full structured object
+      ats_score: parsed.ats?.score || 75,
     };
-
   } catch (error: any) {
-    console.error("Gemini API Error:", error);
-    throw new Error("AI analysis failed. Please try again later.");
+    console.error("Gemini Structured Error:", error);
+    throw new Error("Failed to analyze resume. Please try again.");
   }
 }
