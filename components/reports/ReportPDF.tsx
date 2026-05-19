@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { FileDown, Printer } from "lucide-react";
 import { useState } from "react";
 
 interface ReportPDFButtonProps {
@@ -12,59 +12,43 @@ interface ReportPDFButtonProps {
 export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const generatePDF = async () => {
+  const generatePDF = () => {
     setIsGenerating(true);
 
-    try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      const originalElement = document.getElementById("report-content");
-
-      if (!originalElement) {
-        alert("Report content not found!");
-        return;
-      }
-
-      // Deep clone + aggressive cleanup for PDF
-      const clone = originalElement.cloneNode(true) as HTMLElement;
-
-      // Force clean light theme for PDF
-      clone.style.backgroundColor = "#ffffff";
-      clone.style.color = "#000000";
-
-      // Remove all Tailwind gradient and dark classes that cause issues
-      const allElements = clone.querySelectorAll("*");
-      allElements.forEach((el) => {
-        if (el instanceof HTMLElement) {
-          el.style.backgroundColor = "white";
-          el.style.color = "black";
-          el.style.borderColor = "#cccccc";
+    // Force clean print styles before printing
+    const style = document.createElement("style");
+    style.id = "pdf-print-style";
+    style.innerHTML = `
+      @media print {
+        body * { visibility: hidden; }
+        #report-content, #report-content * { 
+          visibility: visible; 
         }
-      });
+        #report-content {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          background: white !important;
+          color: black !important;
+          padding: 20px;
+        }
+        button, .no-print { display: none !important; }
+      }
+    `;
+    document.head.appendChild(style);
 
-      const opt = {
-        margin: [15, 15, 15, 15] as [number, number, number, number],
-        filename: `RoleNorth_Career_Report_${new Date().toISOString().slice(0, 10)}.pdf`,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          ignoreElements: (el: Element) => el.tagName === "BUTTON",
-        },
-        jsPDF: {
-          unit: "mm",
-          format: "a4",
-          orientation: "portrait",
-        },
-      };
-
-      await html2pdf().set(opt).from(clone).save();
-    } catch (error) {
-      console.error("PDF Generation Error:", error);
-      alert("Could not generate PDF. Please try again or take a screenshot.");
-    } finally {
+    // Trigger Print (User can choose "Save as PDF")
+    setTimeout(() => {
+      window.print();
       setIsGenerating(false);
-    }
+
+      // Clean up style after printing
+      setTimeout(() => {
+        const el = document.getElementById("pdf-print-style");
+        if (el) el.remove();
+      }, 1000);
+    }, 100);
   };
 
   return (
@@ -74,8 +58,8 @@ export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
       className="flex items-center gap-2 bg-white hover:bg-zinc-100 text-black font-medium"
       size="lg"
     >
-      <FileDown className="w-5 h-5" />
-      {isGenerating ? "Generating PDF..." : "Download PDF Report"}
+      <Printer className="w-5 h-5" />
+      {isGenerating ? "Opening Print Dialog..." : "Download / Save as PDF"}
     </Button>
   );
 }
