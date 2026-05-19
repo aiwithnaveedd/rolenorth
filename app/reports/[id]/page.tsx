@@ -1,13 +1,13 @@
 // app/reports/[id]/page.tsx
 import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+
 import { ReportHeader } from "@/components/reports/ReportHeader";
 import { ScoreCards } from "@/components/reports/ScoreCards";
 import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
 import { ActionPlan } from "@/components/reports/ActionPlan";
 import { DownloadPDFButton } from "@/components/reports/ReportPDF";
-import { ReportSkeleton } from "@/components/reports/ReportSkeleton";
 
 export default async function ReportPage({
   params,
@@ -42,20 +42,16 @@ export default async function ReportPage({
       <div id="report-content" className="max-w-6xl mx-auto px-6 py-12">
         <ReportHeader report={report} />
 
-        <div className="flex justify-end mb-8">
+        <div className="flex justify-end mb-10">
           <DownloadPDFButton report={report} />
         </div>
 
-        {/* Hero Score Cards */}
         <ScoreCards analysis={analysis} />
 
-        {/* Main Insights */}
         <InsightsGrid analysis={analysis} />
 
-        {/* Skills Section */}
         <SkillsSection analysis={analysis} />
 
-        {/* Action Plan */}
         <ActionPlan analysis={analysis} />
       </div>
     </div>
