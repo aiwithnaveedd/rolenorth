@@ -16,24 +16,40 @@ export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
     setIsGenerating(true);
 
     try {
-      // Dynamic import to avoid server-side issues
       const html2pdf = (await import("html2pdf.js")).default;
+      const originalElement = document.getElementById("report-content");
 
-      const element = document.getElementById("report-content");
-
-      if (!element) {
+      if (!originalElement) {
         alert("Report content not found!");
         return;
       }
 
+      // Deep clone + aggressive cleanup for PDF
+      const clone = originalElement.cloneNode(true) as HTMLElement;
+
+      // Force clean light theme for PDF
+      clone.style.backgroundColor = "#ffffff";
+      clone.style.color = "#000000";
+
+      // Remove all Tailwind gradient and dark classes that cause issues
+      const allElements = clone.querySelectorAll("*");
+      allElements.forEach((el) => {
+        if (el instanceof HTMLElement) {
+          el.style.backgroundColor = "white";
+          el.style.color = "black";
+          el.style.borderColor = "#cccccc";
+        }
+      });
+
       const opt = {
-        margin: [15, 15],
+        margin: [15, 15, 15, 15] as [number, number, number, number],
         filename: `RoleNorth_Career_Report_${new Date().toISOString().slice(0, 10)}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
+        image: { type: "jpeg", quality: 0.95 },
         html2canvas: {
           scale: 2,
           useCORS: true,
           letterRendering: true,
+          ignoreElements: (el: Element) => el.tagName === "BUTTON",
         },
         jsPDF: {
           unit: "mm",
@@ -42,10 +58,10 @@ export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
         },
       };
 
-      await html2pdf().set(opt).from(element).save();
+      await html2pdf().set(opt).from(clone).save();
     } catch (error) {
       console.error("PDF Generation Error:", error);
-      alert("Failed to generate PDF. Please try again.");
+      alert("Could not generate PDF. Please try again or take a screenshot.");
     } finally {
       setIsGenerating(false);
     }

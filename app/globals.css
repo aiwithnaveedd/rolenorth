@@ -128,3 +128,10 @@
     @apply font-sans;
   }
 }
+
+/* At the bottom of globals.css */
+@supports (color: lab(50 0 0)) {
+  * {
+    color: rgb(0 0 0) !important; /* Fallback for PDF */
+  }
+}

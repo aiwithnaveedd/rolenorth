@@ -1,0 +1,24 @@
+/* app/globals.css  → Add this at the bottom */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .bg-zinc-950, .bg-zinc-900, .bg-black {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .text-white, .text-zinc-300 {
+    color: black !important;
+  }
+  
+  .border-white\/10 {
+    border-color: #ddd !important;
+  }
+  
+  button {
+    display: none !important;
+  }
+}

@@ -8,6 +8,7 @@ import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
 import { ActionPlan } from "@/components/reports/ActionPlan";
 import { DownloadPDFButton } from "@/components/reports/ReportPDF";
+import { ReportSkeleton } from "@/components/reports/ReportSkeleton";
 
 export default async function ReportPage({
   params,
@@ -23,14 +24,16 @@ export default async function ReportPage({
 
   if (!user) notFound();
 
-  const { data: report } = await supabase
+  const { data: report, error } = await supabase
     .from("reports")
     .select("*")
     .eq("id", id)
     .eq("user_id", user.id)
     .single();
 
-  if (!report || !report.analysis) notFound();
+  if (error || !report || !report.analysis) {
+    notFound();
+  }
 
   const analysis =
     typeof report.analysis === "string"
@@ -47,11 +50,8 @@ export default async function ReportPage({
         </div>
 
         <ScoreCards analysis={analysis} />
-
         <InsightsGrid analysis={analysis} />
-
         <SkillsSection analysis={analysis} />
-
         <ActionPlan analysis={analysis} />
       </div>
     </div>
