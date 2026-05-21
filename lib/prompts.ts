@@ -1,103 +1,44 @@
+// prompts.ts
 export function analysisPrompt(text: string) {
   return `
-You are a senior-level AI Career Analyst working for a premium SaaS platform called RoleNorth.
+You are a world-class Career Intelligence Analyst with 15+ years of experience at top tech companies and career coaching firms.
 
-Your job is to analyze a user's resume and return a **highly structured JSON report** used directly in a professional dashboard UI.
+Analyze the following resume and provide a **detailed, structured JSON response** for a premium career analysis platform.
 
-IMPORTANT RULES:
-- Output ONLY valid JSON
-- No markdown, no explanations, no extra text
-- Be precise, structured, and data-driven
-- Keep insights practical and actionable
-- Avoid generic statements
+**Strict Rules:**
+- Respond with **valid JSON only**. No explanations, no markdown.
+- Be honest, constructive, and data-driven.
+- Use professional yet motivational tone.
 
----
-
-RETURN FORMAT (STRICT):
+**Required JSON Structure:**
 
 {
-  "summary": "string",
-
-  "market_position": {
-    "score": number,
-    "strengths": ["string"],
-    "weaknesses": ["string"]
-  },
-
-  "skills": {
-    "strong": ["string"],
-    "moderate": ["string"],
-    "missing": ["string"]
-  },
-
+  "overall_score": number,                  // 0-100
+  "summary": "string",                      // 3-4 sentence professional summary
+  "key_technical_skills": ["skill1", "skill2", ...],
+  "strengths": ["strength1", "strength2", ...],
+  "weaknesses": ["weakness1", "weakness2", ...],
+  "missing_important_skills": ["skill1", "skill2", ...],
+  "ats_score": number,                      // 0-100
+  "automation_risk": "Low" | "Medium" | "High",
   "risk_analysis": {
-    "automation_risk": "Low | Medium | High",
+    "automation_risk": "Low" | "Medium" | "High",
     "details": "string"
   },
-
-  "career_pivots": [
-    {
-      "role": "string",
-      "reason": "string"
-    }
-  ],
-
-  "ats": {
-    "score": number,
-    "tips": ["string"]
+  "market_position": {
+    "strengths": ["..."],
+    "weaknesses": ["..."]
   },
-
   "action_plan": {
-    "30_days": ["string"],
-    "60_days": ["string"],
-    "90_days": ["string"]
+    "30_days": ["action1", "action2", ...],
+    "60_days": ["action1", "action2", ...],
+    "90_days": ["action1", "action2", ...]
   }
 }
 
----
-
-ANALYSIS REQUIREMENTS:
-
-1. SUMMARY
-- 2–4 sentences maximum
-- Professional tone
-- Clearly describe candidate level
-
-2. MARKET POSITION SCORE (0–100)
-- Based on skills, experience, and employability
-- Be realistic, not inflated
-
-3. SKILLS CLASSIFICATION
-- Strong = well demonstrated skills
-- Moderate = partially shown or basic level
-- Missing = important industry skills absent
-
-4. RISK ANALYSIS
-- Evaluate automation risk in career
-- Consider AI impact on job role
-- Give honest assessment
-
-5. CAREER PIVOTS
-- Suggest 2–4 realistic alternative roles
-- Must be aligned with current skills
-
-6. ATS SCORE
-- Evaluate resume compatibility with ATS systems
-- Provide score 0–100
-- Include actionable improvement tips
-
-7. ACTION PLAN
-- 30 days: quick improvements
-- 60 days: skill building + projects
-- 90 days: career execution + job applications
-
----
-
-RESUME CONTENT:
-"""
+**Resume Content:**
 ${text}
-"""
 
-Return only JSON.
+Now generate the analysis:
 `;
 }
