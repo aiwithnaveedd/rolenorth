@@ -3,12 +3,12 @@
   body {
     background: white !important;
     color: black !important;
-  }
+  } */
   
   .bg-zinc-950, .bg-zinc-900, .bg-black {
     background: white !important;
     color: black !important;
-  }
+  } 
   
   .text-white, .text-zinc-300 {
     color: black !important;
