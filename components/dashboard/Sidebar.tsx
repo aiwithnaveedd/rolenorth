@@ -24,7 +24,7 @@ export function DashboardSidebar({ user }: { user: any }) {
   };
 
   return (
-    <div className="w-72 border-r bg-white dark:bg-zinc-900 flex flex-col shadow-sm">
+    <div className="w-72 border-r bg-white dark:bg-zinc-300 flex flex-col shadow-sm">
       <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900">
         <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           RoleNorth

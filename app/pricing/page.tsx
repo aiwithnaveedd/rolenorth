@@ -106,7 +106,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white py-20">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-white py-20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1 text-sm font-medium text-blue-400">
@@ -126,8 +126,8 @@ export default function PricingPage() {
               key={plan.priceId}
               className={`relative rounded-3xl p-8 border ${
                 plan.popular
-                  ? "border-violet-500 bg-zinc-900/70 scale-105"
-                  : "border-white/10 bg-zinc-900/50"
+                  ? "border-violet-500 bg-zinc-300/70 scale-105"
+                  : "border-white/10 bg-zinc-300/50"
               } transition-all hover:border-white/20`}
             >
               {plan.popular && (

@@ -47,7 +47,7 @@ export default function UploadPage() {
         {/* ====================== FULL SCREEN LOADING ====================== */}
         {isAnalyzing && (
           <div className="w-full max-w-2xl">
-            <div className="rounded-3xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
+            <div className="rounded-3xl bg-white/90 dark:bg-zinc-300/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
               <LoadingSpinner stage={stage} />
             </div>
           </div>

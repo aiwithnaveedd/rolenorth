@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white">
+    <div className="min-h-screen ">
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8">
+          <div className="bg-zinc-300 border border-white/10 rounded-3xl p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-emerald-500/10 rounded-2xl">
                 <Award className="w-8 h-8 text-emerald-400" />
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8">
+          <div className="bg-zinc-300 border border-white/10 rounded-3xl p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-500/10 rounded-2xl">
                 <TrendingUp className="w-8 h-8 text-blue-400" />
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8">
+          <div className=" border border-white/10 rounded-3xl p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-amber-500/10 rounded-2xl">
                 <Calendar className="w-8 h-8 text-amber-400" />
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
                   <Link
                     key={report.id}
                     href={`/reports/${report.id}`}
-                    className="group bg-zinc-900 border border-white/10 hover:border-violet-500/50 rounded-3xl p-8 transition-all hover:scale-[1.02]"
+                    className="group  border border-white/10 hover:border-violet-500/50 rounded-3xl p-8 transition-all hover:scale-[1.02]"
                   >
                     <div className="flex justify-between items-start">
                       <div>
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
               })}
             </div>
           ) : (
-            <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-20 text-center">
+            <div className="bg-zinc-300/50 border border-white/10 rounded-3xl p-20 text-center">
               <FileText className="w-20 h-20 mx-auto text-zinc-600 mb-6" />
               <h3 className="text-3xl font-semibold mb-3">No Reports Yet</h3>
               <p className="text-zinc-400 max-w-md mx-auto mb-8">

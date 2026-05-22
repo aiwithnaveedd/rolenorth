@@ -57,7 +57,7 @@ export default async function ReportsPage() {
               <Link
                 key={report.id}
                 href={`/reports/${report.id}`}
-                className="group relative overflow-hidden rounded-3xl border border-white/20 bg-white/70 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:bg-zinc-900/70"
+                className="group relative overflow-hidden rounded-3xl border border-white/20 bg-white/70 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:bg-zinc-300/70"
               >
                 {/* Glow */}
                 <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl transition-all duration-300 group-hover:bg-blue-500/20" />
@@ -116,7 +116,7 @@ export default async function ReportsPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-zinc-300 bg-white/70 p-16 text-center shadow-lg backdrop-blur-xl dark:border-zinc-700 dark:bg-zinc-900/70">
+          <div className="rounded-3xl border border-dashed border-zinc-300 bg-white/70 p-16 text-center shadow-lg backdrop-blur-xl dark:border-zinc-700 dark:bg-zinc-300/70">
             <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg">
               <FileText className="h-10 w-10" />
             </div>
