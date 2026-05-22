@@ -2,8 +2,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Check, Star } from "lucide-react";
-import Link from "next/link";
+import { Check, Star, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 const plans = [
   {
@@ -20,7 +20,8 @@ const plans = [
     ],
     buttonText: "Get Report - $9.99",
     popular: false,
-    priceId: "one_time",
+    priceId: "price_one_time", // ← Change to your actual Stripe Price ID
+    mode: "payment",
   },
   {
     name: "Basic Monthly",
@@ -36,7 +37,8 @@ const plans = [
     ],
     buttonText: "Start Basic Plan",
     popular: false,
-    priceId: "monthly_basic",
+    priceId: "price_monthly_basic",
+    mode: "subscription",
   },
   {
     name: "Pro Monthly",
@@ -53,7 +55,8 @@ const plans = [
     ],
     buttonText: "Go Pro - $49/mo",
     popular: true,
-    priceId: "monthly_pro",
+    priceId: "price_monthly_pro",
+    mode: "subscription",
   },
   {
     name: "Transition Quarterly",
@@ -66,15 +69,42 @@ const plans = [
       "1:1 Career Strategy Call",
       "Resume Optimization Tips",
       "Job Market Intelligence",
-      "Personalized Coaching Insights",
     ],
     buttonText: "Choose Quarterly",
     popular: false,
-    priceId: "quarterly_transition",
+    priceId: "price_quarterly_transition",
+    mode: "subscription",
   },
 ];
 
 export default function PricingPage() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const handleCheckout = async (priceId: string, mode: string) => {
+    setLoadingPlan(priceId);
+
+    try {
+      const res = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId, planType: mode }),
+      });
+
+      const { url } = await res.json();
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Checkout failed. Please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white py-20">
       <div className="max-w-6xl mx-auto px-6">
@@ -91,9 +121,9 @@ export default function PricingPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <div
-              key={index}
+              key={plan.priceId}
               className={`relative rounded-3xl p-8 border ${
                 plan.popular
                   ? "border-violet-500 bg-zinc-900/70 scale-105"
@@ -108,11 +138,13 @@ export default function PricingPage() {
 
               <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
               <div className="flex items-baseline mb-6">
-                <span className="text-5xl font-bold"> ${plan.price}</span>
+                <span className="text-5xl font-bold">${plan.price}</span>
                 <span className="text-zinc-400 ml-2">{plan.period}</span>
               </div>
 
-              <p className="text-zinc-400 mb-8 min-h-[48px]">{plan.description}</p>
+              <p className="text-zinc-400 mb-8 min-h-[48px]">
+                {plan.description}
+              </p>
 
               <ul className="space-y-4 mb-10">
                 {plan.features.map((feature, i) => (
@@ -124,7 +156,8 @@ export default function PricingPage() {
               </ul>
 
               <Button
-                asChild
+                onClick={() => handleCheckout(plan.priceId, plan.mode)}
+                disabled={loadingPlan === plan.priceId}
                 size="lg"
                 className={`w-full h-14 text-base font-semibold rounded-2xl ${
                   plan.popular
@@ -132,19 +165,19 @@ export default function PricingPage() {
                     : "bg-white text-black hover:bg-zinc-200"
                 }`}
               >
-                <Link href={`/subscribe?plan=${plan.priceId}`}>
-                  {plan.buttonText}
-                </Link>
+                {loadingPlan === plan.priceId ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Redirecting...
+                  </>
+                ) : (
+                  plan.buttonText
+                )}
               </Button>
             </div>
           ))}
         </div>
-
-        <p className="text-center text-zinc-500 mt-12 text-sm">
-          All plans include secure Google login and instant AI analysis.
-          <br /> Questions? Contact us at support@rolenorth.com
-        </p>
       </div>
     </div>
   );
-}
+}   
