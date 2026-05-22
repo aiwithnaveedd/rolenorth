@@ -20,7 +20,9 @@ export default async function ReportPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  if (user?.email === "naveedahmedgopang76@gmail.com") {
+    console.log("Admin Access Granted");
+  }
   if (!user) notFound();
 
   const { data: report } = await supabase
@@ -36,6 +38,8 @@ export default async function ReportPage({
     typeof report.analysis === "string"
       ? JSON.parse(report.analysis)
       : report.analysis;
+
+  // Add near the top after fetching report
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white">
