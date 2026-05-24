@@ -20,8 +20,7 @@ const plans = [
     ],
     buttonText: "Get Report - $9.99",
     popular: false,
-    priceId: "price_one_time", // ← Change to your actual Stripe Price ID
-    mode: "payment",
+    productId: "your_polar_one_time_product_id", // ← Change to your Polar Product ID
   },
   {
     name: "Basic Monthly",
@@ -37,8 +36,7 @@ const plans = [
     ],
     buttonText: "Start Basic Plan",
     popular: false,
-    priceId: "price_monthly_basic",
-    mode: "subscription",
+    productId: "your_polar_basic_monthly_id",
   },
   {
     name: "Pro Monthly",
@@ -55,8 +53,7 @@ const plans = [
     ],
     buttonText: "Go Pro - $49/mo",
     popular: true,
-    priceId: "price_monthly_pro",
-    mode: "subscription",
+    productId: "your_polar_pro_monthly_id",
   },
   {
     name: "Transition Quarterly",
@@ -72,22 +69,21 @@ const plans = [
     ],
     buttonText: "Choose Quarterly",
     popular: false,
-    priceId: "price_quarterly_transition",
-    mode: "subscription",
+    productId: "your_polar_quarterly_id",
   },
 ];
 
 export default function PricingPage() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
-  const handleCheckout = async (priceId: string, mode: string) => {
-    setLoadingPlan(priceId);
+  const handleCheckout = async (productId: string) => {
+    setLoadingPlan(productId);
 
     try {
-      const res = await fetch("/api/stripe/create-checkout", {
+      const res = await fetch("/api/polar/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, planType: mode }),
+        body: JSON.stringify({ productId }),
       });
 
       const { url } = await res.json();
@@ -106,7 +102,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-white py-20">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white py-20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1 text-sm font-medium text-blue-400">
@@ -123,11 +119,11 @@ export default function PricingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
             <div
-              key={plan.priceId}
+              key={plan.productId}
               className={`relative rounded-3xl p-8 border ${
                 plan.popular
-                  ? "border-violet-500 bg-zinc-300/70 scale-105"
-                  : "border-white/10 bg-zinc-300/50"
+                  ? "border-violet-500 bg-zinc-900/70 scale-105"
+                  : "border-white/10 bg-zinc-900/50"
               } transition-all hover:border-white/20`}
             >
               {plan.popular && (
@@ -156,8 +152,8 @@ export default function PricingPage() {
               </ul>
 
               <Button
-                onClick={() => handleCheckout(plan.priceId, plan.mode)}
-                disabled={loadingPlan === plan.priceId}
+                onClick={() => handleCheckout(plan.productId)}
+                disabled={loadingPlan === plan.productId}
                 size="lg"
                 className={`w-full h-14 text-base font-semibold rounded-2xl ${
                   plan.popular
@@ -165,7 +161,7 @@ export default function PricingPage() {
                     : "bg-white text-black hover:bg-zinc-200"
                 }`}
               >
-                {loadingPlan === plan.priceId ? (
+                {loadingPlan === plan.productId ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Redirecting...
@@ -180,4 +176,4 @@ export default function PricingPage() {
       </div>
     </div>
   );
-}   
+}

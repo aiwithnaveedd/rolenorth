@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 export default function SuccessPage() {
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [checkoutId, setCheckoutId] = useState<string | null>(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const session_id = urlParams.get("session_id");
-    if (session_id) setSessionId(session_id);
+    const polarId = urlParams.get("polar_checkout_id");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (polarId) setCheckoutId(polarId);
   }, []);
 
   return (
@@ -23,9 +23,11 @@ export default function SuccessPage() {
           <CheckCircle className="w-12 h-12 text-emerald-400" />
         </div>
 
-        <h1 className="text-5xl font-bold tracking-tight mb-4">Payment Successful!</h1>
+        <h1 className="text-5xl font-bold tracking-tight mb-4">
+          Payment Successful!
+        </h1>
         <p className="text-xl text-zinc-400 mb-10">
-          Thank you for choosing RoleNorth. Your account has been upgraded.
+          Thank you! Your RoleNorth account has been upgraded successfully.
         </p>
 
         <div className="space-y-4">
@@ -40,9 +42,9 @@ export default function SuccessPage() {
           </Button>
         </div>
 
-        {sessionId && (
+        {checkoutId && (
           <p className="text-xs text-zinc-500 mt-8">
-            Transaction ID: {sessionId.slice(0, 12)}...
+            Polar Checkout ID: {checkoutId.slice(0, 12)}...
           </p>
         )}
       </div>
