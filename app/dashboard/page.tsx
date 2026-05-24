@@ -10,6 +10,7 @@ import {
   Award,
   Plus,
   ArrowRight,
+  Crown,
 } from "lucide-react";
 
 export default async function DashboardPage() {
@@ -25,6 +26,17 @@ export default async function DashboardPage() {
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
+
+  // Get user subscription status
+  const { data: profile } = await supabase
+    .from("users")
+    .select("subscription_status, subscription_tier")
+    .eq("id", user.id)
+    .single();
+
+  const isSubscribed =
+    profile?.subscription_status === "active" ||
+    profile?.subscription_status === "one_time";
 
   return (
     <div className="min-h-screen ">
@@ -48,6 +60,26 @@ export default async function DashboardPage() {
               New Career Analysis
             </Link>
           </Button>
+        </div>
+
+        {/* Subscription Status */}
+        <div className="mb-12 bg-zinc-900/70 border border-white/10 rounded-3xl p-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Crown className="w-10 h-10 text-amber-400" />
+            <div>
+              <p className="text-lg font-semibold">
+                {isSubscribed ? "Premium Active" : "Free Plan"}
+              </p>
+              <p className="text-zinc-400">
+                {profile?.subscription_tier || "Limited Access"}
+              </p>
+            </div>
+          </div>
+          {!isSubscribed && (
+            <Button asChild variant="outline">
+              <Link href="/pricing">Upgrade Plan</Link>
+            </Button>
+          )}
         </div>
 
         {/* Stats */}
@@ -76,7 +108,7 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className=" border border-white/10 rounded-3xl p-8">
+          <div className=" border bg-zinc-300 border-white/10 rounded-3xl p-8">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-amber-500/10 rounded-2xl">
                 <Calendar className="w-8 h-8 text-amber-400" />
