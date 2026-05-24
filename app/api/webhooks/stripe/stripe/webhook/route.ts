@@ -33,11 +33,19 @@ export async function POST(request: NextRequest) {
           await supabase
             .from("users")
             .update({
-              subscription_status: session.mode === "subscription" ? "active" : "one_time",
-              subscription_tier: session.metadata?.plan_type,
+              subscription_status:
+                session.mode === "subscription" ? "active" : "one_time",
+              subscription_tier: session.metadata?.plan_type || "one-time",
             })
             .eq("id", userId);
         }
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
+        // Optional: Mark user as canceled
+        console.log("Subscription canceled:", subscription.id);
         break;
       }
 

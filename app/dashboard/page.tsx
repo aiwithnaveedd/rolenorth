@@ -62,8 +62,28 @@ export default async function DashboardPage() {
           </Button>
         </div>
 
+        {/* Subscription Status Bar */}
+        <div className="mb-10 bg-zinc-500/70 border border-white/10 rounded-3xl p-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Crown className="w-9 h-9 text-amber-400" />
+            <div>
+              <p className="font-semibold text-lg">
+                {isSubscribed ? "✅ Premium Active" : "Free Plan"}
+              </p>
+              <p className="text-sm text-zinc-400">
+                {profile?.subscription_tier || "Limited to 1 report"}
+              </p>
+            </div>
+          </div>
+          {!isSubscribed && (
+            <Button asChild variant="outline">
+              <Link href="/pricing">Upgrade Now</Link>
+            </Button>
+          )}
+        </div>
+
         {/* Subscription Status */}
-        <div className="mb-12 bg-zinc-900/70 border border-white/10 rounded-3xl p-8 flex items-center justify-between">
+        {/* <div className="mb-12 bg-zinc-900/70 border border-white/10 rounded-3xl p-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Crown className="w-10 h-10 text-amber-400" />
             <div>
@@ -80,7 +100,7 @@ export default async function DashboardPage() {
               <Link href="/pricing">Upgrade Plan</Link>
             </Button>
           )}
-        </div>
+        </div> */}
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
