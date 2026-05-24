@@ -20,7 +20,7 @@ export function SkillsSection({ analysis }: SkillsSectionProps) {
     [];
 
   return (
-    <div className="mb-12 bg-zinc-900/70 border border-white/10 rounded-3xl p-10">
+    <div className="mb-12 bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950  rounded-3xl p-10">
       <h2 className="text-3xl font-semibold mb-8 flex items-center gap-3">
         🔧 Key Technical Skills
       </h2>
@@ -30,7 +30,7 @@ export function SkillsSection({ analysis }: SkillsSectionProps) {
           {technicalSkills.map((skill: string, i: number) => (
             <span
               key={i}
-              className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-2xl text-sm font-medium transition-all"
+              className="px-6 py-3 bg-zinc-300 hover:bg-zinc-700 border border-white/10 rounded-2xl text-sm font-medium transition-all"
             >
               {skill}
             </span>
@@ -57,7 +57,7 @@ export function SkillsSection({ analysis }: SkillsSectionProps) {
             {missingSkills.map((skill: string, i: number) => (
               <span
                 key={i}
-                className="px-6 py-3 bg-amber-950 border border-amber-500/30 rounded-2xl text-sm"
+                className="px-6 py-3 bg-amber-350 border border-amber-500/30 rounded-2xl text-sm"
               >
                 {skill}
               </span>

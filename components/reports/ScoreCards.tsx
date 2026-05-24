@@ -9,7 +9,7 @@ export function ScoreCards({ analysis }: ScoreCardsProps) {
   const overallScore = analysis.overall_score || analysis.ats?.score || 87;
 
   return (
-    <div className="mb-16 rounded-3xl bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/10 p-12 text-center relative overflow-hidden">
+    <div className="mb-16 rounded-3xl  p-12 text-center relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(at_center,#4f46e510_0%,transparent_70%)]" />
 
       <p className="uppercase tracking-[4px] text-sm text-zinc-500 mb-3">

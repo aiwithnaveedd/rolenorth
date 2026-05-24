@@ -7,7 +7,7 @@ interface ActionPlanProps {
 
 export function ActionPlan({ analysis }: ActionPlanProps) {
   return (
-    <div className="bg-zinc-900/70 border border-white/10 rounded-3xl p-10">
+    <div className="bg-zinc-300/70 border border-white/10 rounded-3xl p-10">
       <h2 className="text-3xl font-semibold mb-10 flex items-center gap-3">
         <Target className="text-violet-400" /> Your 90-Day Action Plan
       </h2>

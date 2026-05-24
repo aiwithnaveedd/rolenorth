@@ -49,7 +49,7 @@ export function UploadResumeForm({ onAnalysisStart }: UploadResumeFormProps) {
     }
   };
   return (
-    <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl shadow-2xl">
+    <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/70 dark:bg-zinc-300/70 backdrop-blur-xl shadow-2xl">
       {/* Glow Effects */}
       <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />

@@ -1,20 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UploadResumeForm } from "@/components/forms/UploadResumeForm";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-
+import { useSubscription } from "@/components/hooks/useSubscription";
+import { useRouter } from "next/navigation";
 export default function UploadPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [stage, setStage] = useState<"parsing" | "analyzing">("parsing");
+  const { isPaid, loading } = useSubscription();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (!loading && isPaid === false) {
+      router.push("/pricing?message=limit_reached");
+    }
+  }, [isPaid, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Checking access...
+      </div>
+    );
+  }
   const handleAnalysisStart = () => {
     setIsAnalyzing(true);
     setStage("parsing");
   };
 
-  // We no longer need to hide it manually because we redirect
-  // const handleAnalysisComplete = () => setIsAnalyzing(false);
+  if (isPaid === false) {
+    return null; // Will redirect
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
@@ -47,7 +64,7 @@ export default function UploadPage() {
         {/* ====================== FULL SCREEN LOADING ====================== */}
         {isAnalyzing && (
           <div className="w-full max-w-2xl">
-            <div className="rounded-3xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
+            <div className="rounded-3xl bg-white/90 dark:bg-zinc-300/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
               <LoadingSpinner stage={stage} />
             </div>
           </div>
