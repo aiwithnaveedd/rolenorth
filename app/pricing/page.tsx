@@ -102,10 +102,10 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white py-20">
+    <div className="min-h-screen bg-linear-to-br from-zinc-250/90 via-zinc-200  text-white py-20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1 text-sm font-medium text-blue-400">
+          <span className="inline-flex items-center rounded-full border border-blue-600/20 bg-blue-200/10 px-4 py-1 text-sm font-medium text-blue-400">
             Pricing
           </span>
           <h1 className="text-5xl font-bold tracking-tight mt-6 mb-4">
@@ -122,8 +122,8 @@ export default function PricingPage() {
               key={plan.productId}
               className={`relative rounded-3xl p-8 border ${
                 plan.popular
-                  ? "border-violet-500 bg-zinc-900/70 scale-105"
-                  : "border-white/10 bg-zinc-900/50"
+                  ? "border-violet-500 bg-zinc-300/70 scale-105"
+                  : "border-white/10 bg-zinc-300/50"
               } transition-all hover:border-white/20`}
             >
               {plan.popular && (
@@ -158,7 +158,7 @@ export default function PricingPage() {
                 className={`w-full h-14 text-base font-semibold rounded-2xl ${
                   plan.popular
                     ? "bg-violet-600 hover:bg-violet-700"
-                    : "bg-white text-black hover:bg-zinc-200"
+                    : "bg-white text-black hover:bg-zinc-300"
                 }`}
               >
                 {loadingPlan === plan.productId ? (
