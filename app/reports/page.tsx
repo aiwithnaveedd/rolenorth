@@ -50,7 +50,7 @@ export default async function ReportsPage() {
             </p>
           </div>
 
-          {/* { /* Compare Button   */}
+          {/* Compare Button   */}
           <Link className="flex justify-end" href="/reports/compare">
             <Button className=" bg-zinc-300 mt-2 hover:bg-zinc-400 text-white">
               Compare Reports
