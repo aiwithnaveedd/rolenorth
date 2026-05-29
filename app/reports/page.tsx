@@ -3,6 +3,7 @@
 import { createClientServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import { FileText, ArrowRight, Sparkles, CalendarDays } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default async function ReportsPage() {
   const supabase = await createClientServer();
@@ -48,6 +49,13 @@ export default async function ReportsPage() {
               View all your resume analysis reports and career insights.
             </p>
           </div>
+
+          {/* { /* Compare Button   */}
+          <Link className="flex justify-end" href="/reports/compare">
+            <Button className=" bg-zinc-300 mt-2 hover:bg-zinc-400 text-white">
+              Compare Reports
+            </Button>
+          </Link>
         </div>
 
         {/* Reports Grid */}
@@ -142,3 +150,21 @@ export default async function ReportsPage() {
     </main>
   );
 }
+
+
+{/* Actions - Block 2 */}
+//   <Link
+//     href={`/reports/${report.id}`}
+//     className="flex-1 bg-zinc-900 hover:bg-black text-white text-center py-3.5 rounded-2xl text-sm font-medium transition"
+//   >
+//     View Full Report
+//   </Link>
+
+//   <Link
+//     href="/reports/compare"
+//     className="flex-1 border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-center py-3.5 rounded-2xl text-sm font-medium transition"
+//   >
+//     Compare
+//   </Link>
+// </div>
+// <div className="flex gap-3 mt-8">

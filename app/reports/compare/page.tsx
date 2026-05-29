@@ -30,8 +30,7 @@ export default async function CompareReportsPage() {
 
     reports = data || [];
   } catch (error) {
-    console.error("Error fetching reports for comparison:", error);
-    // Continue with empty array
+    console.error("Failed to fetch reports:", error);
   }
 
   return <CompareClient initialReports={reports} />;
