@@ -12,9 +12,9 @@ export default function UploadPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && isPaid === false) {
-      router.push("/pricing?message=limit_reached");
-    }
+    // if (!loading && isPaid === false) {
+    //   router.push("/pricing?message=limit_reached");
+    // }
   }, [isPaid, loading, router]);
 
   if (loading) {
@@ -29,12 +29,12 @@ export default function UploadPage() {
     setStage("parsing");
   };
 
-  if (isPaid === false) {
-    return null; // Will redirect
-  }
+  // if (isPaid === false) {
+  //   return null; // Will redirect
+  // }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-350 dark:via-zinc-300 dark:to-zinc-350">
       {/* Background Glow */}
       <div className="absolute top-0 left-0 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl" />
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl" />
@@ -64,7 +64,7 @@ export default function UploadPage() {
         {/* ====================== FULL SCREEN LOADING ====================== */}
         {isAnalyzing && (
           <div className="w-full max-w-2xl">
-            <div className="rounded-3xl bg-white/90 dark:bg-zinc-300/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-700 shadow-2xl p-12 md:p-16">
+            <div className="rounded-3xl bg-white/90 dark:bg-zinc-200/90 backdrop-blur-2xl border border-white/20 dark:border-zinc-270 shadow-2xl p-12 md:p-16">
               <LoadingSpinner stage={stage} />
             </div>
           </div>
