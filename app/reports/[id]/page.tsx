@@ -3,7 +3,7 @@ import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 
 import { ReportHeader } from "@/components/reports/ReportHeader";
-import { ScoreCards } from "@/components/reports/ScoreCards";
+import { ResumeScoreCard } from "@/components/reports/ScoreCards";
 import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
 import { ActionPlan } from "@/components/reports/ActionPlan";
@@ -78,7 +78,10 @@ export default async function ReportPage({
         <ReportHeader report={report} />
 
         <div className="space-y-10 mt-10">
-          <ScoreCards analysis={analysis} />
+          <ResumeScoreCard
+            score={analysis.overall_score || analysis.ats?.score || 87}
+            analysisDate={report.created_at}
+          />
           <InsightsGrid analysis={analysis} />
           <SkillsSection analysis={analysis} />
           <ActionPlan analysis={analysis} />
