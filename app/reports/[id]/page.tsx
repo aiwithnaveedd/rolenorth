@@ -8,6 +8,9 @@ import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
 import { ActionPlan } from "@/components/reports/ActionPlan";
 import { DownloadPDFButton } from "@/components/reports/ReportPDF";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default async function ReportPage({
   params,
@@ -34,26 +37,52 @@ export default async function ReportPage({
 
   if (!report || !report.analysis) notFound();
 
-  const analysis =
-    typeof report.analysis === "string"
-      ? JSON.parse(report.analysis)
-      : report.analysis;
+  let analysis: any = {};
+  const rawAnalysis = report.analysis;
 
+  try {
+    if (typeof rawAnalysis === "string") {
+      const cleaned = rawAnalysis.trim().replace(/^```json\n?|\n?```$/g, "");
+      if (cleaned.startsWith("{") || cleaned.startsWith("[")) {
+        analysis = JSON.parse(cleaned);
+      } else {
+        analysis = { content: rawAnalysis };
+      }
+    } else {
+      analysis = rawAnalysis || {};
+    }
+  } catch (e) {
+    console.warn("Analysis parsing failed, treating as markdown");
+    analysis = { content: rawAnalysis || "No content available" };
+  }
   // Add near the top after fetching report
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 ">
-      <div id="report-content" className="max-w-6xl mx-auto px-6 py-12">
-        <ReportHeader report={report} />
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50">
+      <div
+        id="report-content"
+        className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12"
+      >
+        {/* Back Button + Header */}
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="ghost" asChild className="hover:bg-zinc-100">
+            <Link href="/reports" className="flex items-center gap-2">
+              <ArrowLeft className="w-5 h-5" />
+              Back to Reports
+            </Link>
+          </Button>
 
-        <div className="flex justify-end mb-10">
           <DownloadPDFButton report={report} />
         </div>
 
-        <ScoreCards analysis={analysis} />
-        <InsightsGrid analysis={analysis} />
-        <SkillsSection analysis={analysis} />
-        <ActionPlan analysis={analysis} />
+        <ReportHeader report={report} />
+
+        <div className="space-y-10 mt-10">
+          <ScoreCards analysis={analysis} />
+          <InsightsGrid analysis={analysis} />
+          <SkillsSection analysis={analysis} />
+          <ActionPlan analysis={analysis} />
+        </div>
       </div>
     </div>
   );
