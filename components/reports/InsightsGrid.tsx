@@ -1,5 +1,6 @@
 // components/reports/InsightsGrid.tsx
 import { TrendingUp, AlertTriangle } from "lucide-react";
+import { MarkdownContent } from "./MarkdownContent";
 
 interface InsightsGridProps {
   analysis: any;
