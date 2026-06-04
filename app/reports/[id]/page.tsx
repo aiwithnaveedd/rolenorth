@@ -1,6 +1,8 @@
 // app/reports/[id]/page.tsx
 import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 
 import { ReportHeader } from "@/components/reports/ReportHeader";
 import { ResumeScoreCard } from "@/components/reports/ScoreCards";

@@ -38,3 +38,4 @@ export function ResumeScoreCard({ score, analysisDate }: ResumeScoreCardProps) {
     </Card>
   );
 }
+  
