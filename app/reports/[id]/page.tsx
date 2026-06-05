@@ -3,7 +3,7 @@ import { createClientServer } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { ReportHeader } from "@/components/reports/ReportHeader";
+import ReportHeader from "@/components/reports/ReportHeader";
 import { ResumeScoreCard } from "@/components/reports/ScoreCards";
 import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
