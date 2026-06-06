@@ -1,7 +1,10 @@
 // components/reports/InsightsGrid.tsx
-import { TrendingUp, AlertTriangle } from "lucide-react";
-import { MarkdownContent } from "./MarkdownContent";
-
+import {
+  Lightbulb,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
 interface InsightsGridProps {
   analysis: any;
 }
@@ -14,6 +17,7 @@ export function InsightsGrid({ analysis }: InsightsGridProps) {
     analysis.market_position?.weaknesses ||
     analysis.areas_to_improve ||
     [];
+  const suggestions = analysis?.suggestions_for_improvement || [];
 
   return (
     <div className="grid md:grid-cols-2 gap-8 mb-12">

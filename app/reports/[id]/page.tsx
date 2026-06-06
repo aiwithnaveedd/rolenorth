@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import ReportHeader from "@/components/reports/ReportHeader";
-import { ResumeScoreCard } from "@/components/reports/ScoreCards";
+import ResumeScoreCard from "@/components/reports/ScoreCards";
 import { InsightsGrid } from "@/components/reports/InsightsGrid";
 import { SkillsSection } from "@/components/reports/SkillsSection";
 import { ActionPlan } from "@/components/reports/ActionPlan";
@@ -41,7 +41,7 @@ export default async function ReportPage({
 
   let analysis: any = {};
   const rawAnalysis = report.analysis;
-
+  const atsScore: string | number = report?.ats_score || "—";
   try {
     if (typeof rawAnalysis === "string") {
       const cleaned = rawAnalysis.trim().replace(/^```json\n?|\n?```$/g, "");
@@ -82,8 +82,8 @@ export default async function ReportPage({
 
           <div className="space-y-10 mt-10">
             <ResumeScoreCard
-              score={analysis.overall_score || analysis.ats?.score || 87}
-              analysisDate={report.created_at}
+              overAllScore={analysis.overall_score || analysis.ats?.score || 87}
+              atsScore={atsScore}
             />
             <InsightsGrid analysis={analysis} />
             <SkillsSection analysis={analysis} />
