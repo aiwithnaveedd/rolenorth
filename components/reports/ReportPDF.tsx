@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
+import { Download, Loader2, Printer } from "lucide-react";
 import { useState } from "react";
 
 interface ReportPDFButtonProps {
@@ -12,12 +12,12 @@ interface ReportPDFButtonProps {
 export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleSaveAsPDF = () => {
+  const handleSaveAsPDF = async () => {
     setIsGenerating(true);
-
-    const printStyle = document.createElement("style");
-    printStyle.id = "print-style";
-    printStyle.innerHTML = `
+    try {
+      const printStyle = document.createElement("style");
+      printStyle.id = "print-style";
+      printStyle.innerHTML = `
       @media print {
         body * { visibility: hidden; }
         #report-content, #report-content * { visibility: visible; }
@@ -28,32 +28,46 @@ export function DownloadPDFButton({ report }: ReportPDFButtonProps) {
           background: white !important;
           color: black !important;
           padding: 40px;
-        }
-        button { display: none !important; }
-      }
-    `;
-    document.head.appendChild(printStyle);
-
-    setTimeout(() => {
-      window.print();
-      setIsGenerating(false);
+          }
+          button { display: none !important; }
+          }
+          `;
+      document.head.appendChild(printStyle);
 
       setTimeout(() => {
-        const el = document.getElementById("print-style");
-        if (el) el.remove();
-      }, 500);
-    }, 100);
+        window.print();
+        setIsGenerating(false);
+
+        setTimeout(() => {
+          const el = document.getElementById("print-style");
+          if (el) el.remove();
+        }, 500);
+      }, 100);
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Sorry, something went wrong while generating the PDF.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
     <Button
       onClick={handleSaveAsPDF}
       disabled={isGenerating}
-      className="flex items-center gap-2 bg-white hover:bg-zinc-100 text-black font-medium"
-      size="lg"
+      className="bg-zinc-300 hover:bg-zinc-400 text-white flex items-center gap-2 px-6 py-2.5 rounded-2xl transition-all active:scale-[0.985]"
     >
-      <Printer className="w-5 h-5" />
-      {isGenerating ? "Opening Print..." : "Save as PDF"}
+      {isGenerating ? (
+        <>
+          <Loader2 className="w-4 h-4 animate-spin" />
+          Generating PDF...
+        </>
+      ) : (
+        <>
+          <Download className="w-4 h-4" />
+          Download PDF Report
+        </>
+      )}
     </Button>
   );
 }
