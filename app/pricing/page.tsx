@@ -124,7 +124,7 @@ export default function PricingPage() {
                 plan.popular
                   ? "border-violet-500 bg-zinc-300/70 scale-105"
                   : "border-white/10 bg-zinc-300/50"
-              } transition-all hover:border-white/20`}
+              } transition-all hover:border-green-500/20`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-violet-600 text-white text-xs font-semibold px-6 py-1 rounded-full flex items-center gap-1">
@@ -158,7 +158,7 @@ export default function PricingPage() {
                 className={`w-full h-14 text-base font-semibold rounded-2xl ${
                   plan.popular
                     ? "bg-violet-600 hover:bg-violet-700"
-                    : "bg-white text-black hover:bg-zinc-300"
+                    : "bg-white text-black hover:bg-blue-200"
                 }`}
               >
                 {loadingPlan === plan.productId ? (

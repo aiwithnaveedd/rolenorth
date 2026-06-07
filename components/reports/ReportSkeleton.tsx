@@ -1,26 +1,35 @@
-// components/reports/ReportSkeleton.tsx
+"use client";
+
 export function ReportSkeleton() {
   return (
-    <div className="min-h-screen bg-zinc-950 animate-pulse">
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="h-12 w-96 bg-zinc-800 rounded-xl mb-12" />
-
-        <div className="h-48 bg-zinc-300 rounded-3xl mb-16" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 space-y-8">
-            <div className="h-80 bg-zinc-300 rounded-3xl" />
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="h-96 bg-zinc-300 rounded-3xl" />
-              <div className="h-96 bg-zinc-300 rounded-3xl" />
-            </div>
-          </div>
-          <div className="lg:col-span-4 space-y-8">
-            <div className="h-64 bg-zinc-300 rounded-3xl" />
-            <div className="h-64 bg-zinc-300 rounded-3xl" />
+    <div className="space-y-10 animate-pulse">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="h-10 w-10 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
+          <div className="space-y-2">
+            <div className="h-8 w-80 bg-zinc-200 dark:bg-zinc-800 rounded-xl" />
+            <div className="h-4 w-64 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
           </div>
         </div>
+        <div className="h-10 w-32 bg-zinc-200 dark:bg-zinc-800 rounded-xl" />
       </div>
+
+      {/* Score Card */}
+      <div className="h-80 bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+
+      {/* Grid Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={i}
+            className="h-96 bg-zinc-100 dark:bg-zinc-900 rounded-3xl"
+          />
+        ))}
+      </div>
+
+      {/* Summary */}
+      <div className="h-72 bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
     </div>
   );
 }
