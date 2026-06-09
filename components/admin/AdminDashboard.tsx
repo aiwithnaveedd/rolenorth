@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { Toaster, toast } from 'sonner';
-import { Users, FileText, TrendingUp, Plus, RefreshCw } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Toaster, toast } from "sonner";
+import { Users, FileText, TrendingUp, Plus, RefreshCw } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -11,6 +11,7 @@ interface Profile {
   email?: string;
   current_location: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 interface Report {
@@ -35,49 +36,61 @@ export default function AdminDashboard() {
   async function fetchData() {
     setLoading(true);
     try {
-      // Fetch profiles
-      const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Fetch profiles with correct column
+      const { data: profilesData, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("updated_at", { ascending: false });
+
+      if (profileError) {
+        console.error("Profiles fetch error:", profileError);
+        toast.error("Error loading profiles");
+      }
 
       // Fetch reports
-      const { data: reportsData } = await supabase
-        .from('reports')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const { data: reportsData, error: reportError } = await supabase
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (reportError) {
+        console.error("Reports fetch error:", reportError);
+      }
 
       setProfiles(profilesData || []);
       setReports(reportsData || []);
+
+      console.log("✅ Profiles loaded:", profilesData?.length || 0);
+      console.log("✅ Reports loaded:", reportsData?.length || 0);
     } catch (err) {
-      toast.error('Failed to load data');
       console.error(err);
+      toast.error("Failed to load admin data");
     } finally {
       setLoading(false);
     }
   }
 
   async function generateReportForUser(userId: string) {
-    if (!userId) return toast.error('Select a user');
+    if (!userId) return toast.error("Select a user");
 
     setGeneratingFor(userId);
     try {
-      const res = await fetch('/api/admin/generate-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/generate-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        toast.success('Report generated successfully!');
-        await fetchData(); // Refresh
+        toast.success("Report generated successfully!");
+        await fetchData();
       } else {
-        toast.error(data.error || 'Failed to generate report');
+        toast.error(data.error || "Failed to generate report");
       }
     } catch (err) {
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     } finally {
       setGeneratingFor(null);
     }
@@ -87,9 +100,19 @@ export default function AdminDashboard() {
   const totalReports = reports.length;
   const avgATS = reports.length
     ? Math.round(
-        reports.reduce((sum, r) => sum + (r.ats_score || 0), 0) / reports.length
+        reports.reduce((sum, r) => sum + (r.ats_score || 0), 0) /
+          reports.length,
       )
     : 0;
+
+  console.log(
+    "Profiles:",
+    profiles.map((p) => p.id),
+  );
+  console.log(
+    "Reports:",
+    reports.map((r) => r.id),
+  );
 
   return (
     <div className="min-h-screen bg-zinc-50 p-6 md:p-8">
@@ -157,23 +180,22 @@ export default function AdminDashboard() {
               <tbody>
                 {profiles.map((profile) => (
                   <tr key={profile.id} className="border-b hover:bg-zinc-50">
-                    <td className="py-4 px-4">
-                      {profile.full_name || '—'}
-                    </td>
+                    <td className="py-4 px-4">{profile.full_name || "—"}</td>
                     <td className="py-4 px-4 text-zinc-600">
-                      {profile.current_location || '—'}
+                      {profile.current_location || "—"}
                     </td>
                     <td className="py-4 px-4 text-sm text-zinc-500">
-                      {new Date(profile.created_at).toLocaleDateString()}
+                      {new Date(profile.updated_at).toLocaleDateString()}
                     </td>
                     <td className="py-4 px-4 text-right">
                       <button
                         onClick={() => generateReportForUser(profile.id)}
                         disabled={generatingFor === profile.id}
-                        className="flex items-center gap-2 px-5 py-2 bg-black text-white rounded-xl hover:bg-zinc-800 disabled:opacity-70 text-sm"
+                        className="flex items-center
+                        gap-2 px-5 py-2 bg-zinc-300 text-white rounded-xl hover:bg-zinc-400 disabled:opacity-70 text-sm"
                       >
                         {generatingFor === profile.id ? (
-                          'Generating...'
+                          "Generating..."
                         ) : (
                           <>
                             <Plus className="w-4 h-4" /> Generate Report
@@ -203,7 +225,9 @@ export default function AdminDashboard() {
               <tbody>
                 {reports.slice(0, 10).map((report) => (
                   <tr key={report.id} className="border-b">
-                    <td className="py-4 px-4 font-mono text-sm">{report.user_id}</td>
+                    <td className="py-4 px-4 font-mono text-sm">
+                      {report.user_id}
+                    </td>
                     <td className="py-4 px-4">
                       <span className="font-semibold">{report.ats_score}</span>
                     </td>
