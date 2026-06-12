@@ -1,47 +1,38 @@
 // app/api/polar/create-checkout/route.ts
+import { NextRequest } from "next/server";
 import { polar } from "@/lib/polar";
-import { createClientServer } from "@/lib/supabase/server";
-import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/client";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { productId }: { productId: string } = await request.json();
-
-    if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
-    }
-
-    const supabase = await createClientServer();
+    const { productId, planType } = await req.json();
+    const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ Correct Polar Checkout API (Updated)
     const checkout = await polar.checkouts.create({
-      products: [productId],
-      customerId: user.id,
+      productId, // Must match Polar Product ID
+      customer: {
+        email: user.email,
+      },
+      successUrl: process.env.NEXT_PUBLIC_POLAR_SUCCESS_URL!,
+      cancelUrl: process.env.NEXT_PUBLIC_POLAR_CANCEL_URL!,
       metadata: {
         user_id: user.id,
+        plan_type: planType,
       },
-      successUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?polar_checkout_id={CHECKOUT_ID}`,
-      // cancelUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
     });
 
-    return NextResponse.json({
-      url: checkout.url,
-      checkoutId: checkout.id,
-    });
+    return Response.json({ url: checkout.url });
   } catch (error: any) {
     console.error("Polar Checkout Error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to create checkout session" },
+    return Response.json(
+      { error: error.message || "Failed to create checkout" },
       { status: 500 },
     );
   }
