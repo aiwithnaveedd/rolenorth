@@ -1,7 +1,6 @@
 // app/api/webhooks/polar/route.ts
-import { Webhook } from "@polar-sh/sdk";
-import { polar } from "@/lib/polar";
-import { createClient } from "@/utils/supabase/server";
+import * as PolarSDK from "@polar-sh/sdk";
+import { createClient } from "@/lib/supabase/client";
 
 const webhookSecret = process.env.POLAR_WEBHOOK_SECRET!;
 
@@ -10,29 +9,38 @@ export async function POST(req: Request) {
   const signature = req.headers.get("webhook-signature") || "";
 
   try {
-    const webhook = new Webhook(webhookSecret);
+    const webhook = new (PolarSDK as any).Webhook(webhookSecret);
     const event = webhook.verify(body, signature);
+
+    console.log(`Received Polar event: ${event.type}`);
 
     const supabase = await createClient();
 
-    // Handle subscription events
     if (event.type === "subscription.created" || event.type === "subscription.updated") {
       const sub = event.data;
 
-      await supabase.from("user_subscriptions").upsert({
+      const { error } = await supabase.from("user_subscriptions").upsert({
         user_id: sub.metadata?.user_id as string,
         polar_subscription_id: sub.id,
-        plan_type: sub.product_id,
+        plan_type: sub.product_id || sub.product?.id, // safer
         status: sub.status,
         current_period_end: sub.current_period_end ? new Date(sub.current_period_end) : null,
         updated_at: new Date(),
       });
+
+      if (error) console.error("Supabase upsert error:", error);
     }
 
-    // Handle successful one-time payments if needed
     if (event.type === "checkout.completed") {
       const checkout = event.data;
-      // Optional: mark one-time report as unlocked
+      // Handle one-time purchases (e.g., single report)
+      if (checkout.metadata?.plan_type === "one_time_report") {
+        // Mark report access or credits in DB
+        await supabase.from("user_reports").upsert({
+          user_id: checkout.metadata.user_id,
+          // add purchased report flag etc.
+        });
+      }
     }
 
     return new Response("OK", { status: 200 });
