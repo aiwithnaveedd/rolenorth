@@ -27,7 +27,7 @@ export default function LoginPage() {
         <Button
           onClick={signInWithGoogle}
           size="lg"
-          className="w-full text-lg py-7"
+          className="w-full text-lg py-7 bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center"
         >
           <LogIn className="mr-3" />
           Continue with Google
