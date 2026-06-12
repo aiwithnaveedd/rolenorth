@@ -105,14 +105,7 @@ export default function AdminDashboard() {
       )
     : 0;
 
-  console.log(
-    "Profiles:",
-    profiles.map((p) => p.id),
-  );
-  console.log(
-    "Reports:",
-    reports.map((r) => r.id),
-  );
+
 
   return (
     <div className="min-h-screen bg-zinc-50 p-6 md:p-8">

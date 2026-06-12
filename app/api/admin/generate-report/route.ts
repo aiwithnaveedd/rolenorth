@@ -44,19 +44,24 @@ export async function POST(request: Request) {
       .limit(1)
       .single();
 
-    if (reportError) {
-      console.error("Report fetch error:", reportError);
-    }
-
     if (!latestReport?.raw_text) {
       return NextResponse.json(
         {
-          error:
-            "No resume text found for this user. Please upload a resume first.",
+          error: "User has no resume uploaded yet. Ask them to upload first.",
         },
         { status: 400 },
       );
     }
+
+    // if (!latestReport?.raw_text) {
+    //   return NextResponse.json(
+    //     {
+    //       error:
+    //         "No resume text found for this user. Please upload a resume first.",
+    //     },
+    //     { status: 400 },
+    //   );
+    // }
 
     const metadata = {
       currentLocation: profile?.current_location || "Not specified",
