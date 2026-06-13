@@ -1,37 +1,42 @@
 // app/api/polar/create-checkout/route.ts
+import { NextRequest } from "next/server";
 import { polar } from "@/lib/polar";
-import { createClientServer } from "@/lib/supabase/server";
-import { NextRequest, NextResponse } from "next/server";
+import { createClientServer } from "@/lib/supabase/server"; // ← Fixed import
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { productId } = await request.json();
+    const { productId, planType } = await req.json();
 
-    const supabase = await createClientServer();
-    const { data: { user } } = await supabase.auth.getUser();
+    const supabase = await createClientServer(); // ← Use the correct function name
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (authError || !user?.id || !user?.email) {
+      console.error("Auth error:", authError);
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const checkout = await polar.checkouts.create({
-      productId: productId,
+      products: [productId], // ← Fixed: Must be array
       customer: {
-        email: user.email!,
+        email: user.email,
       },
+      successUrl: process.env.NEXT_PUBLIC_POLAR_SUCCESS_URL!,
+      cancelUrl: process.env.NEXT_PUBLIC_POLAR_CANCEL_URL!,
       metadata: {
         user_id: user.id,
+        plan_type: planType || "default", // ← Ensure it's a valid string
       },
-      successUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success?polar_checkout_id={CHECKOUT_ID}`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
     });
 
-    return NextResponse.json({ url: checkout.url });
+    return Response.json({ url: checkout.url });
   } catch (error: any) {
     console.error("Polar Checkout Error:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: error.message || "Failed to create checkout" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
