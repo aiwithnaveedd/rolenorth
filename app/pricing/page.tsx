@@ -21,6 +21,7 @@ const plans = [
     buttonText: "Get Report - $9.99",
     popular: false,
     productId: "your_polar_one_time_product_id", // ← Change to your Polar Product ID
+    planType: "one-time",
   },
   {
     name: "Basic Monthly",
@@ -37,6 +38,7 @@ const plans = [
     buttonText: "Start Basic Plan",
     popular: false,
     productId: "your_polar_basic_monthly_id",
+    planType: "monthly",
   },
   {
     name: "Pro Monthly",
@@ -54,6 +56,7 @@ const plans = [
     buttonText: "Go Pro - $49/mo",
     popular: true,
     productId: "your_polar_pro_monthly_id",
+    planType: "monthly",
   },
   {
     name: "Transition Quarterly",
@@ -70,32 +73,34 @@ const plans = [
     buttonText: "Choose Quarterly",
     popular: false,
     productId: "your_polar_quarterly_id",
+    planType: "quarterly",
   },
 ];
 
 export default function PricingPage() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
-  const handleCheckout = async (productId: string) => {
+  const handleCheckout = async (productId: string, planType: string) => {
     setLoadingPlan(productId);
 
     try {
       const res = await fetch("/api/polar/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({ productId, planType }),
       });
 
-      const { url } = await res.json();
+      const { url, error } = await res.json();
 
-      if (url) {
-        window.location.href = url;
-      } else {
-        alert("Something went wrong. Please try again.");
+      if (error || !url) {
+        alert(error || "Failed to create checkout");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      alert("Checkout failed. Please try again.");
+      // Safe redirect
+      window.location.assign(url);
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
     } finally {
       setLoadingPlan(null);
     }
@@ -152,7 +157,7 @@ export default function PricingPage() {
               </ul>
 
               <Button
-                onClick={() => handleCheckout(plan.productId)}
+                onClick={() => handleCheckout(plan.productId, plan.planType)}
                 disabled={loadingPlan === plan.productId}
                 size="lg"
                 className={`w-full h-14 text-base font-semibold rounded-2xl ${

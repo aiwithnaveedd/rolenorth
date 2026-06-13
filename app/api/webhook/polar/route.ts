@@ -1,6 +1,5 @@
-// app/api/webhooks/polar/route.ts
-import * as PolarSDK from "@polar-sh/sdk";
-import { createClient } from "@/lib/supabase/client";
+import * as polar from "@polar-sh/sdk";
+import { createClientServer } from "@/lib/supabase/server";
 
 const webhookSecret = process.env.POLAR_WEBHOOK_SECRET!;
 
@@ -9,43 +8,47 @@ export async function POST(req: Request) {
   const signature = req.headers.get("webhook-signature") || "";
 
   try {
-    const webhook = new (PolarSDK as any).Webhook(webhookSecret);
+    const WebhookClass = (polar as any).Webhook || (polar as any).default?.Webhook;
+    if (!WebhookClass) {
+      throw new Error("Webhook class not found in @polar-sh/sdk");
+    }
+    const webhook = new WebhookClass(webhookSecret);
     const event = webhook.verify(body, signature);
 
-    console.log(`Received Polar event: ${event.type}`);
-
-    const supabase = await createClient();
-
-    if (event.type === "subscription.created" || event.type === "subscription.updated") {
-      const sub = event.data;
-
-      const { error } = await supabase.from("user_subscriptions").upsert({
-        user_id: sub.metadata?.user_id as string,
-        polar_subscription_id: sub.id,
-        plan_type: sub.product_id || sub.product?.id, // safer
-        status: sub.status,
-        current_period_end: sub.current_period_end ? new Date(sub.current_period_end) : null,
-        updated_at: new Date(),
-      });
-
-      if (error) console.error("Supabase upsert error:", error);
-    }
+    const supabase = await createClientServer();
 
     if (event.type === "checkout.completed") {
       const checkout = event.data;
-      // Handle one-time purchases (e.g., single report)
+      const userId = checkout.metadata?.user_id as string;
+
       if (checkout.metadata?.plan_type === "one_time_report") {
-        // Mark report access or credits in DB
         await supabase.from("user_reports").upsert({
-          user_id: checkout.metadata.user_id,
-          // add purchased report flag etc.
+          user_id: userId,
+          has_access: true,
+          purchased_at: new Date().toISOString(),
         });
       }
     }
 
+    if (
+      event.type === "subscription.created" ||
+      event.type === "subscription.updated"
+    ) {
+      const sub = event.data;
+      await supabase.from("user_subscriptions").upsert({
+        user_id: sub.metadata?.user_id as string,
+        polar_subscription_id: sub.id,
+        plan_type: sub.product?.id || sub.metadata?.plan_type,
+        status: sub.status,
+        current_period_end: sub.current_period_end
+          ? new Date(sub.current_period_end)
+          : null,
+      });
+    }
+
     return new Response("OK", { status: 200 });
-  } catch (err: any) {
-    console.error("Polar webhook error:", err);
+  } catch (err) {
+    console.error("Webhook error:", err);
     return new Response("Invalid signature", { status: 400 });
   }
 }
