@@ -1,22 +1,25 @@
 // app/api/polar/create-checkout/route.ts
 import { NextRequest } from "next/server";
 import { polar } from "@/lib/polar";
-import { createClient } from "@/lib/supabase/client";
+import { createClientServer } from "@/lib/supabase/server"; // ← Fixed import
 
 export async function POST(req: NextRequest) {
   try {
     const { productId, planType } = await req.json();
-    const supabase = await createClient();
+
+    const supabase = await createClientServer(); // ← Use the correct function name
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
 
-    if (!user?.email) {
+    if (authError || !user?.id || !user?.email) {
+      console.error("Auth error:", authError);
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const checkout = await polar.checkouts.create({
-      productId, // Must match Polar Product ID
+      products: [productId], // ← Fixed: Must be array
       customer: {
         email: user.email,
       },
@@ -24,7 +27,7 @@ export async function POST(req: NextRequest) {
       cancelUrl: process.env.NEXT_PUBLIC_POLAR_CANCEL_URL!,
       metadata: {
         user_id: user.id,
-        plan_type: planType,
+        plan_type: planType || "default", // ← Ensure it's a valid string
       },
     });
 
